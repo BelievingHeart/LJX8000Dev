@@ -358,7 +358,7 @@
 		public static extern int LJX8IF_EthernetOpen(int lDeviceId, ref LJX8IF_ETHERNET_CONFIG pEthernetConfig);
 
 		[DllImport("LJX8_IF.dll")]
-		internal static extern int LJX8IF_CommunicationClose(int lDeviceId);
+		public static extern int LJX8IF_CommunicationClose(int lDeviceId);
 
 		[DllImport("LJX8_IF.dll")]
 		internal static extern int LJX8IF_RebootController(int lDeviceId);

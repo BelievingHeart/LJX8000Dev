@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using HalconDotNet;
 using LJX8000.Core.Commands;
+using LJX8000.Core.Enums;
 using LJX8000.Core.Helpers;
 using LJXNative;
 using LJXNative.Data;
@@ -28,6 +29,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         #region Property
 
         public ICommand ConnectCommand { get; set; }
+        public ICommand DisconnectCommand { get; set; }
         public ICommand InitHighSpeedCommand { get; set; }
         public ICommand PreStartHighSpeedCommand { get; set; }
         public ICommand StartHighSpeedCommand { get; set; }
@@ -130,6 +132,10 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             {
                 Log("Failed to start high speed communication");
             }
+            else
+            {
+                Status = DeviceStatus.EthernetFast;
+            }
         }
 
         public void StopHighSpeedCommunication()
@@ -139,6 +145,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             {
                 Log("Failed to stop high speed communication");
             }
+            
         }
     
         public void FinalizeHighSpeedCommunication()
@@ -150,6 +157,13 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             }
 
             if (Status == DeviceStatus.EthernetFast) Status = DeviceStatus.Ethernet;
+        }
+
+        public void Disconnect()
+        {
+            var success = NativeMethods.LJX8IF_CommunicationClose(DeviceId) == _okFlag;
+
+           if(success) Status = DeviceStatus.NoConnection;
         }
 
         public void Serialize(string path, int start, int count)
@@ -206,6 +220,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             _callbackSimpleArray = CallBackSimpleArray;
             
             ConnectCommand = new RelayCommand(Connect);
+            DisconnectCommand = new RelayCommand(Disconnect);
             InitHighSpeedCommand = new RelayCommand(InitHighSpeedCommunicationSimpleArray);
             PreStartHighSpeedCommand = new RelayCommand(PreStartHighSpeedCommunication);
             StartHighSpeedCommand = new RelayCommand(StartHighSpeedCommunication);

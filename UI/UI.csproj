@@ -104,6 +104,7 @@
     </ApplicationDefinition>
     <Compile Include="AttachedProperties\AttachedPropertyOwnerBase.cs" />
     <Compile Include="Converters\EventToCommandBehaviour.cs" />
+    <Compile Include="Converters\StatusToIconConverter.cs" />
     <Compile Include="Converters\StringToControllerPageConverter.cs" />
     <Compile Include="Converters\ValueConverterBase.cs" />
     <Compile Include="DataAccess\UILogger.cs" />
