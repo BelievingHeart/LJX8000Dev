@@ -32,7 +32,9 @@
                 <ComboBox Grid.Column="0" ItemsSource="{Binding ControllerNames}" SelectedValue="{Binding CurrentControllerName}"/>
                 <ContentControl Grid.Column="1" Content="{Binding CurrentControllerName, Converter={converters:StringToControllerPageConverter}}"></ContentControl>
                 
-                <Expander Grid.Column="0" Background="Transparent" ExpandDirection="Right" HorizontalAlignment="Left" IsExpanded="{Binding AutoResetFlag, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">
+                <!-- Side bar logging system -->
+                <Expander Grid.Column="0" Background="Transparent" ExpandDirection="Right" HorizontalAlignment="Left" IsExpanded="{Binding AutoResetFlag,
+                  Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">
                         <Expander.Header>
                                 <TextBlock
                                         Text="Logs"
@@ -44,7 +46,16 @@
                                 </TextBlock>
                         </Expander.Header>
             
-                        <ListBox ItemsSource="{Binding LogRecords, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}"></ListBox>
+                        <ItemsControl ItemsSource="{Binding LogRecords, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">
+                                <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                                <StackPanel>
+                                                        <TextBlock Text="{Binding Message}" FontSize="24" HorizontalAlignment="Left"/>
+                                                        <TextBlock Text="{Binding Time}" FontSize="14" HorizontalAlignment="Right"/>
+                                                </StackPanel>
+                                        </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                 </Expander>
         </Grid>
 </Window>
