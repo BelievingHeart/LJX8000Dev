@@ -31,7 +31,7 @@ namespace UI
             ControllerManager.Init();
             
             // Set up IoC
-            IoC.Kernel.Bind<IUILogger>().ToConstant(new UILogger());
+            IoC.Kernel.Bind<IUILogger>().ToConstant(new SidebarLogger());
 
             IoC.Setup();
             

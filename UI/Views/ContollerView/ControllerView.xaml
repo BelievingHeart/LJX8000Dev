@@ -9,19 +9,24 @@
              xmlns:converters="clr-namespace:UI.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-   
-    <StackPanel>
-        <Button Command="{Binding ConnectCommand}">Connect</Button>
-        <Button Command="{Binding InitHighSpeedCommand}">Init simple array</Button>
-        <Button Command="{Binding PreStartHighSpeedCommand}">Pre-start</Button>
-        <Button Command="{Binding StartHighSpeedCommand}">Start high speed</Button>
-        <Button Command="{Binding StopHighSpeedCommand}">Stop high speed</Button>
-        <Button Command="{Binding FinalizeHighSpeedCommand}">Finalize high speed</Button>
-        <Button Command="{Binding SaveImageCommand}">Serialize</Button>
-        <Button Command="{Binding DisconnectCommand}">Disconnect</Button>
 
-        <Border>
-            <materialDesign:PackIcon Kind="{Binding Status, Converter={converters:StatusToIconConverter}}"/>
-        </Border>
-    </StackPanel>
+    <Grid>
+        <StackPanel>
+            <Button Command="{Binding ConnectCommand}">Connect</Button>
+            <Button Command="{Binding InitHighSpeedCommand}">Init simple array</Button>
+            <Button Command="{Binding PreStartHighSpeedCommand}">Pre-start</Button>
+            <Button Command="{Binding StartHighSpeedCommand}">Start high speed</Button>
+            <Button Command="{Binding StopHighSpeedCommand}">Stop high speed</Button>
+            <Button Command="{Binding FinalizeHighSpeedCommand}">Finalize high speed</Button>
+            <Button Command="{Binding SaveImageCommand}">Serialize</Button>
+            <Button Command="{Binding DisconnectCommand}">Disconnect</Button>
+
+            <Border>
+                <materialDesign:PackIcon Kind="{Binding Status, Converter={converters:StatusToIconConverter}}" />
+            </Border>
+        </StackPanel>
+        
+     
+    </Grid>
+
 </UserControl>

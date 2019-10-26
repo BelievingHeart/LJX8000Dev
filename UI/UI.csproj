@@ -107,7 +107,8 @@
     <Compile Include="Converters\StatusToIconConverter.cs" />
     <Compile Include="Converters\StringToControllerPageConverter.cs" />
     <Compile Include="Converters\ValueConverterBase.cs" />
-    <Compile Include="DataAccess\UILogger.cs" />
+    <Compile Include="DataAccess\SidebarLogger.cs" />
+    <Compile Include="DataAccess\SnackbarLogger.cs" />
     <Compile Include="Views\ContollerView\ControllerView.xaml.cs">
       <DependentUpon>ControllerView.xaml</DependentUpon>
     </Compile>

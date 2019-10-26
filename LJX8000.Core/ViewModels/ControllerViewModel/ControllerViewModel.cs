@@ -36,7 +36,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         public ICommand StopHighSpeedCommand { get; set; }
         public ICommand FinalizeHighSpeedCommand { get; set; }
         public ICommand SaveImageCommand { get; set; }
-        
+
         /// <summary>
         /// Status property
         /// </summary>
@@ -69,6 +69,8 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             // Bind device id to this class or rather this ip
             var success = NativeMethods.LJX8IF_EthernetOpen(DeviceId, ref ip) == _okFlag;
             if (!success) Log($"Open connection failed at {IpConfig}");
+            //TODO: remove this line
+            else Log("Hello");
             Status = success ? DeviceStatus.Ethernet : DeviceStatus.NoConnection;
             IpConfig = ip.ToViewModel();
         }
@@ -145,9 +147,8 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             {
                 Log("Failed to stop high speed communication");
             }
-            
         }
-    
+
         public void FinalizeHighSpeedCommunication()
         {
             var success = NativeMethods.LJX8IF_FinalizeHighSpeedDataCommunication(DeviceId) == _okFlag;
@@ -163,12 +164,12 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         {
             var success = NativeMethods.LJX8IF_CommunicationClose(DeviceId) == _okFlag;
 
-           if(success) Status = DeviceStatus.NoConnection;
+            if (success) Status = DeviceStatus.NoConnection;
         }
 
         public void Serialize(string path, int start, int count)
         {
-            if(SimpleArrayDataHighSpeed.DataWidth == 0)
+            if (SimpleArrayDataHighSpeed.DataWidth == 0)
             {
                 Log("Failed to serialize > data width == 0");
                 return;
@@ -176,10 +177,8 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
 
             SimpleArrayDataHighSpeed.SaveDataAsImages(path, start, count);
         }
-        
 
-       
-        
+
         public bool IsBufferFull { get; set; }
 
         /// <summary>
@@ -199,10 +198,6 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             IoC.IoC.Log(msg);
         }
 
- 
-
-     
-
 
         /// <summary>Simple array data for high speed communication</summary>
         public ProfileSimpleArrayStore SimpleArrayDataHighSpeed { get; }
@@ -218,7 +213,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         {
             SimpleArrayDataHighSpeed = new ProfileSimpleArrayStore();
             _callbackSimpleArray = CallBackSimpleArray;
-            
+
             ConnectCommand = new RelayCommand(Connect);
             DisconnectCommand = new RelayCommand(Disconnect);
             InitHighSpeedCommand = new RelayCommand(InitHighSpeedCommunicationSimpleArray);
@@ -226,7 +221,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             StartHighSpeedCommand = new RelayCommand(StartHighSpeedCommunication);
             StopHighSpeedCommand = new RelayCommand(StopHighSpeedCommunication);
             FinalizeHighSpeedCommand = new RelayCommand(FinalizeHighSpeedCommunication);
-            SaveImageCommand = new RelayCommand(()=> Serialize("C:/Users/ABC/Desktop/Xiaojin/Temp/test.tiff", 0, 800) );
+            SaveImageCommand = new RelayCommand(() => Serialize("C:/Users/ABC/Desktop/Xiaojin/Temp/test.tiff", 0, 800));
         }
 
         #endregion
