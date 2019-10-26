@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:applicationViewModel="clr-namespace:LJX8000.Core.ViewModels.ApplicationViewModel;assembly=LJX8000.Core"
+        xmlns:viewModels="clr-namespace:LJX8000.Core.ViewModels;assembly=LJX8000.Core"
+        xmlns:converters="clr-namespace:UI.Converters"
 
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -16,8 +18,18 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="Image Debugger" Height="800" Width="1200"
         WindowState="Maximized" FocusManager.FocusedElement="{Binding ElementName=Frame}">
+        <Window.DataContext>
+                <viewModels:MainWindowViewModel/>
+        </Window.DataContext>
         <Grid>
-                <materialDesign:Snackbar Panel.ZIndex="10" VerticalAlignment="Center" HorizontalAlignment="Center" MessageQueue="{Binding Path=MessageQueue, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}"/>
 
+                <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <materialDesign:Snackbar Grid.Column="0" Grid.ColumnSpan="2" Panel.ZIndex="10" VerticalAlignment="Center" HorizontalAlignment="Center" MessageQueue="{Binding Path=MessageQueue, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}"/>
+
+                <ComboBox Grid.Column="0" ItemsSource="{Binding ControllerNames}" SelectedValue="{Binding CurrentControllerName}"/>
+                <ContentControl Grid.Column="1" Content="{Binding CurrentControllerName, Converter={converters:StringToControllerPageConverter}}"></ContentControl>
         </Grid>
 </Window>

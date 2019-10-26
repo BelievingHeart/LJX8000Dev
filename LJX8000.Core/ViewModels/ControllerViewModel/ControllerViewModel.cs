@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Input;
 using HalconDotNet;
+using LJX8000.Core.Commands;
 using LJX8000.Core.Helpers;
 using LJXNative;
 using LJXNative.Data;
@@ -16,10 +18,23 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// <summary>Connection state</summary>
         private DeviceStatus _status = DeviceStatus.NoConnection;
 
+        /// <summary>
+        /// Set as field so that it would not be garbage collected
+        /// </summary>
+        private HighSpeedDataCallBackForSimpleArray _callbackSimpleArray;
+
         #endregion
 
         #region Property
 
+        public ICommand ConnectCommand { get; set; }
+        public ICommand InitHighSpeedCommand { get; set; }
+        public ICommand PreStartHighSpeedCommand { get; set; }
+        public ICommand StartHighSpeedCommand { get; set; }
+        public ICommand StopHighSpeedCommand { get; set; }
+        public ICommand FinalizeHighSpeedCommand { get; set; }
+        public ICommand SaveImageCommand { get; set; }
+        
         /// <summary>
         /// Status property
         /// </summary>
@@ -62,7 +77,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             SimpleArrayDataHighSpeed.Clear();
             var nativeIp = IpConfig.ToNative();
             var success = NativeMethods.LJX8IF_InitializeHighSpeedDataCommunicationSimpleArray(DeviceId, ref nativeIp,
-                HighSpeedPort, CallBackSimpleArray, ProfileCountEachFetch, (uint) DeviceId);
+                HighSpeedPort, _callbackSimpleArray, ProfileCountEachFetch, (uint) DeviceId);
         }
 
 
@@ -187,10 +202,16 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// </summary>
         public ControllerViewModel()
         {
-        
-            ;
             SimpleArrayDataHighSpeed = new ProfileSimpleArrayStore();
-            ;
+            _callbackSimpleArray = CallBackSimpleArray;
+            
+            ConnectCommand = new RelayCommand(Connect);
+            InitHighSpeedCommand = new RelayCommand(InitHighSpeedCommunicationSimpleArray);
+            PreStartHighSpeedCommand = new RelayCommand(PreStartHighSpeedCommunication);
+            StartHighSpeedCommand = new RelayCommand(StartHighSpeedCommunication);
+            StopHighSpeedCommand = new RelayCommand(StopHighSpeedCommunication);
+            FinalizeHighSpeedCommand = new RelayCommand(FinalizeHighSpeedCommunication);
+            SaveImageCommand = new RelayCommand(()=> Serialize("C:/Users/ABC/Desktop/Xiaojin/Temp/test.tiff", 0, 800) );
         }
 
         #endregion
