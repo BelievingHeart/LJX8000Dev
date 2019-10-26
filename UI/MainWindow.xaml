@@ -3,9 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:cameraHostView="clr-namespace:UI.Views.CameraHostView"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:applicationViewModel="clr-namespace:HKCameraDev.Core.ViewModels.ApplicationViewModel;assembly=HKCameraDev.Core"
+        xmlns:applicationViewModel="clr-namespace:LJX8000.Core.ViewModels.ApplicationViewModel;assembly=LJX8000.Core"
 
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -19,7 +18,6 @@
         WindowState="Maximized" FocusManager.FocusedElement="{Binding ElementName=Frame}">
         <Grid>
                 <materialDesign:Snackbar Panel.ZIndex="10" VerticalAlignment="Center" HorizontalAlignment="Center" MessageQueue="{Binding Path=MessageQueue, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}"/>
-                <cameraHostView:CameraHostView/>
 
         </Grid>
 </Window>

@@ -104,15 +104,8 @@
     </ApplicationDefinition>
     <Compile Include="AttachedProperties\AttachedPropertyOwnerBase.cs" />
     <Compile Include="Converters\EventToCommandBehaviour.cs" />
-    <Compile Include="Converters\StringToCameraViewConverter.cs" />
     <Compile Include="Converters\ValueConverterBase.cs" />
     <Compile Include="DataAccess\UILogger.cs" />
-    <Compile Include="Views\CameraHostView\CameraHostView.xaml.cs">
-      <DependentUpon>CameraHostView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\CameraView\CameraView.xaml.cs">
-      <DependentUpon>CameraView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\PageBase.cs" />
     <Compile Include="Views\UserControlBase.cs" />
     <Page Include="MainWindow.xaml">
@@ -131,8 +124,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\CameraHostView\CameraHostView.xaml" />
-    <Page Include="Views\CameraView\CameraView.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -168,9 +159,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HKCameraDev.Core\HKCameraDev.Core.csproj">
+    <ProjectReference Include="..\HKCameraDev.Core\LJX8000.Core.csproj">
       <Project>{43275736-8146-432f-9ba0-fdcd1edcda8a}</Project>
-      <Name>HKCameraDev.Core</Name>
+      <Name>LJX8000.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

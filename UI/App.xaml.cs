@@ -1,6 +1,6 @@
 ﻿using System.Windows;
-using HKCameraDev.Core.IoC;
-using HKCameraDev.Core.IoC.Interface;
+using LJX8000.Core.IoC;
+using LJX8000.Core.IoC.Interface;
 using UI.DataAccess;
 
 namespace UI

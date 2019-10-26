@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using HKCameraDev.Core.ViewModels.CameraViewModel;
 
 namespace UI
 {
@@ -21,7 +20,6 @@ namespace UI
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
-            HKCameraManager.CloseAllCameras();
         }
     }
 }

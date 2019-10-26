@@ -1,5 +1,5 @@
 ﻿using System.Windows.Controls;
-using HKCameraDev.Core.ViewModels;
+using LJX8000.Core.ViewModels;
 
 namespace UI.Views
 {
