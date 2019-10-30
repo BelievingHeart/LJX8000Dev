@@ -30,6 +30,9 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// </summary>
         private HighSpeedDataCallBackForSimpleArray _callbackSimpleArray;
 
+        private int _rowsPerImage = 800;
+        private bool _isConnectedHighSpeed = false;
+
         #endregion
 
         #region Property
@@ -41,9 +44,28 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         public ICommand StartHighSpeedCommand { get; set; }
         public ICommand StopHighSpeedCommand { get; set; }
         public ICommand FinalizeHighSpeedCommand { get; set; }
-        public ICommand SaveImageCommand { get; set; }
-
         public ICommand OpenImageDirCommand { get; set; }
+
+        /// <summary>
+        /// If this controller is connected in high-speed mode
+        /// </summary>
+        public bool IsConnectedHighSpeed
+        {
+            get { return _isConnectedHighSpeed; }
+            set
+            {
+                _isConnectedHighSpeed = value;
+                if(_isConnectedHighSpeed)
+                {
+                    ConnectHighSpeed();
+                }
+                else
+                {
+                    DisconnectHighSpeed();
+                }
+            }
+        }
+
 
         /// <summary>
         /// Status property
@@ -54,18 +76,42 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             set
             {
                 SimpleArrayDataHighSpeed.Clear();
-                
+                CollectedRows = 0;
                 _status = value;
             }
         }
 
 
-        public int CurrentImageIndex { get; set; }
 
         /// <summary>
         /// How many lines is needed to compose an image
         /// </summary>
-        public int RowsPerImage { get; set; } = 800;
+        public int RowsPerImage
+        {
+            get { return _rowsPerImage; }
+            set
+            {
+                _rowsPerImage = value;
+                CollectedRows = 0;
+            }
+        }
+        
+        /// <summary>
+        /// How many rows within current image index has been collected
+        /// </summary>
+        private int CollectedRows { get; set; }
+        
+        /// <summary>
+        /// How many lines of profiles should be fetched for each data communication invoke
+        /// </summary>
+        public uint ProfileCountEachFetch { get; set; } = 100;
+
+        /// <summary>
+        /// The unique id managed by native library, defaults to the last byte of ip address
+        /// </summary>
+        public int DeviceId { get; set; }
+
+        public ushort HighSpeedPort { get; set; } = 24692;
 
         /// <summary>
         /// OK flag used by native library
@@ -99,10 +145,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             }
         }
 
-        /// <summary>
-        /// How many rows within current image index has been collected
-        /// </summary>
-        private uint CollectedRows { get; set; }
+  
 
 
         /// <summary>
@@ -121,13 +164,12 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         {
             IsBufferFull = SimpleArrayDataHighSpeed.AddReceivedData(profileBuffer, luminanceBuffer, count);
             SimpleArrayDataHighSpeed.Notify = notify;
-            CollectedRows += count;
+            CollectedRows += (int)count;
             if (CollectedRows == RowsPerImage)
             {
                 CollectedRows = 0;
-                CurrentImageIndex++;
                 Directory.CreateDirectory(SerializationDirectory);
-                    Serialize($"{SerializationDirectory}/{DateTime.Now.ToString("MMddHHmmss")}.tif",
+                    Serialize($"{SerializationDirectory}/{DateTime.Now.ToString("MMddHHmmssffff")}.tif",
                         0, RowsPerImage);
                     SimpleArrayDataHighSpeed.Clear();
                     
@@ -136,7 +178,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             }
         }
 
-        public int RowsOverflow { get; set; } = 20000;
+ 
 
         public string SerializationDirectory => Directory.GetCurrentDirectory() + $"/Images/{IpConfig.ForthByte}/";
 
@@ -219,17 +261,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
 
         public bool IsBufferFull { get; set; }
 
-        /// <summary>
-        /// How many lines of profiles should be fetched for each data communication invoke
-        /// </summary>
-        public uint ProfileCountEachFetch { get; set; } = 100;
 
-        /// <summary>
-        /// The unique id managed by native library, defaults to the last byte of ip address
-        /// </summary>
-        public int DeviceId { get; set; }
-
-        public ushort HighSpeedPort { get; set; } = 24692;
 
         private static void Log(string msg)
         {
@@ -259,20 +291,47 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             StartHighSpeedCommand = new RelayCommand(StartHighSpeedCommunication);
             StopHighSpeedCommand = new RelayCommand(StopHighSpeedCommunication);
             FinalizeHighSpeedCommand = new RelayCommand(FinalizeHighSpeedCommunication);
-            ResetCurrentImageIndexCommand = new RelayCommand(()=>CurrentImageIndex=0);
             OpenImageDirCommand = new RelayCommand(OpenImageDir);
+            
+            
+            
+        }
+        
+        
+        
+
+        /// <summary>
+        /// From stop to disconnect in one step
+        /// </summary>
+        private void DisconnectHighSpeed()
+        {
+            StopHighSpeedCommunication();
+            FinalizeHighSpeedCommunication();
+            Disconnect();
         }
 
+        /// <summary>
+        /// Connect directly into high speed mode
+        /// </summary>
+        private void ConnectHighSpeed()
+        {
+            Connect();
+            InitHighSpeedCommunicationSimpleArray();
+            PreStartHighSpeedCommunication();
+            StartHighSpeedCommunication();
+        }
+        
+        
+
+        #endregion
+
+        #region Method
+        
         private void OpenImageDir()
         {
             Directory.CreateDirectory(SerializationDirectory);
             Process.Start(SerializationDirectory);
         }
-
-        #endregion
-
-        #region Method
-
         /// <summary>
         /// Connection status acquisition
         /// </summary>

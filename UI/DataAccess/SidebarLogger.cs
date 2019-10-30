@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using LJX8000.Core.IoC.Interface;
 using LJX8000.Core.ViewModels.ApplicationViewModel;
 using LJX8000.Core.ViewModels.SideBarMessageItemViewModel;
@@ -14,7 +15,7 @@ namespace UI.DataAccess
                 ApplicationViewModel.Instance.Enqueue(new SideBarMessageItemViewModel()
                 {
                     Message = message,
-                    Time = "Time"
+                    Time = DateTime.Now.ToString("h:mm:ss tt zz")
                 });
             });
         }
