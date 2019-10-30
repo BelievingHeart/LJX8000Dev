@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{687635E2-8EBB-4B98-B701-77D882FA9FF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LJX8000.Core", "LJX8000.Core\LJX8000.Core.csproj", "{43275736-8146-432F-9BA0-FDCD1EDCDA8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LJXNative", "LJXNative\LJXNative.csproj", "{9A49BFA3-F7B8-4254-BA49-2D690CEC849D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{687635E2-8EBB-4B98-B701-77D882FA9FF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{687635E2-8EBB-4B98-B701-77D882FA9FF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{687635E2-8EBB-4B98-B701-77D882FA9FF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{687635E2-8EBB-4B98-B701-77D882FA9FF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43275736-8146-432F-9BA0-FDCD1EDCDA8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43275736-8146-432F-9BA0-FDCD1EDCDA8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43275736-8146-432F-9BA0-FDCD1EDCDA8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43275736-8146-432F-9BA0-FDCD1EDCDA8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A49BFA3-F7B8-4254-BA49-2D690CEC849D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A49BFA3-F7B8-4254-BA49-2D690CEC849D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A49BFA3-F7B8-4254-BA49-2D690CEC849D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A49BFA3-F7B8-4254-BA49-2D690CEC849D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {18E7391F-4059-4B61-9BA0-409B1557A7FA}
+	EndGlobalSection
+EndGlobal

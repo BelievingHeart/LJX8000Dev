@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using HalconDotNet;
 using LJX8000.Core.Commands;
@@ -46,14 +47,18 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             set
             {
                 SimpleArrayDataHighSpeed.Clear();
+                
                 _status = value;
             }
         }
 
+
+        public int CurrentImageIndex { get; set; }
+
         /// <summary>
         /// How many lines is needed to compose an image
         /// </summary>
-        public int RowsPerImage { get; set; }
+        public int RowsPerImage { get; set; } = 800;
 
         /// <summary>
         /// OK flag used by native library
@@ -69,8 +74,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             // Bind device id to this class or rather this ip
             var success = NativeMethods.LJX8IF_EthernetOpen(DeviceId, ref ip) == _okFlag;
             if (!success) Log($"Open connection failed at {IpConfig}");
-            //TODO: remove this line
-            else Log("Hello");
+       
             Status = success ? DeviceStatus.Ethernet : DeviceStatus.NoConnection;
             IpConfig = ip.ToViewModel();
         }
@@ -81,8 +85,17 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             SimpleArrayDataHighSpeed.Clear();
             var nativeIp = IpConfig.ToNative();
             var success = NativeMethods.LJX8IF_InitializeHighSpeedDataCommunicationSimpleArray(DeviceId, ref nativeIp,
-                HighSpeedPort, _callbackSimpleArray, ProfileCountEachFetch, (uint) DeviceId);
+                HighSpeedPort, _callbackSimpleArray, ProfileCountEachFetch, (uint) DeviceId) == _okFlag;
+            if(success)
+            {
+                Status = DeviceStatus.EthernetFast;
+            }
         }
+
+        /// <summary>
+        /// How many rows within current image index has been collected
+        /// </summary>
+        private uint CollectedRows { get; set; }
 
 
         /// <summary>
@@ -101,7 +114,29 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         {
             IsBufferFull = SimpleArrayDataHighSpeed.AddReceivedData(profileBuffer, luminanceBuffer, count);
             SimpleArrayDataHighSpeed.Notify = notify;
+            CollectedRows += count;
+            if (CollectedRows == RowsPerImage)
+            {
+                CollectedRows = 0;
+                CurrentImageIndex++;
+                Task.Run(() =>
+                {
+                    Serialize($"{SerializationDirectory}/{CurrentImageIndex}.tif",
+                        (CurrentImageIndex - 1) * RowsPerImage, RowsPerImage);
+                    if(CurrentImageIndex * RowsPerImage> RowsOverflow)
+                    {
+                        SimpleArrayDataHighSpeed.Clear();
+                    } 
+                });
+                
+            }
         }
+
+        public int RowsOverflow { get; set; } = 20000;
+
+        public string SerializationDirectory { get; set; } = "C:/Users/ABC/Desktop/Xiaojin/Temp";
+
+        private ICommand ResetCurrentImageIndexCommand { get; set; }
 
         public void PreStartHighSpeedCommunication()
         {
@@ -134,11 +169,10 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             {
                 Log("Failed to start high speed communication");
             }
-            else
-            {
-                Status = DeviceStatus.EthernetFast;
-            }
+         
         }
+        
+        
 
         public void StopHighSpeedCommunication()
         {
@@ -184,7 +218,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// <summary>
         /// How many lines of profiles should be fetched for each data communication invoke
         /// </summary>
-        public uint ProfileCountEachFetch { get; set; } = 1;
+        public uint ProfileCountEachFetch { get; set; } = 100;
 
         /// <summary>
         /// The unique id managed by native library, defaults to the last byte of ip address
@@ -222,6 +256,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             StopHighSpeedCommand = new RelayCommand(StopHighSpeedCommunication);
             FinalizeHighSpeedCommand = new RelayCommand(FinalizeHighSpeedCommunication);
             SaveImageCommand = new RelayCommand(() => Serialize("C:/Users/ABC/Desktop/Xiaojin/Temp/test.tiff", 0, 800));
+            ResetCurrentImageIndexCommand = new RelayCommand(()=>CurrentImageIndex=0);
         }
 
         #endregion

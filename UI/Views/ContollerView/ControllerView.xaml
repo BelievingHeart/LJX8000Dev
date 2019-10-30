@@ -20,13 +20,30 @@
             <Button Command="{Binding FinalizeHighSpeedCommand}">Finalize high speed</Button>
             <Button Command="{Binding SaveImageCommand}">Serialize</Button>
             <Button Command="{Binding DisconnectCommand}">Disconnect</Button>
+            <GroupBox Header="Image Serialization" Margin="5 20">
+                <StackPanel>
+                    <Button Command="{Binding ResetCurrentImageIndexCommand}">Reset Index</Button>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock>Rows Per Image: </TextBlock>
+                        <materialDesign:Badged Badge="{Binding CollectedRows}">
+                            <TextBox Margin="5 0" Text="{Binding RowsPerImage}" />
+                        </materialDesign:Badged>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock>Profile Count Each Fetch: </TextBlock>
+                        <TextBox Margin="5 0" Text="{Binding ProfileCountEachFetch}" />
+                    </StackPanel>
+                    <TextBox materialDesign:HintAssist.Hint="Image Directory" Text="{Binding SerializationDirectory}" />
+                </StackPanel>
+            </GroupBox>
 
             <Border>
                 <materialDesign:PackIcon Kind="{Binding Status, Converter={converters:StatusToIconConverter}}" />
             </Border>
         </StackPanel>
-        
-     
+
+
     </Grid>
 
 </UserControl>
