@@ -137,7 +137,7 @@
 				BatchNo = 0;
 				Count = 0;
 				_notify = 0;
-				DataWidth = 0;
+//				DataWidth = 0;
 				IsLuminanceEnable = false;
 				_profileData.Clear();
 				_luminanceData.Clear();
@@ -180,7 +180,7 @@
 
 		private void SaveTiff(int index, int count, string pathBase)
 		{
-			const string heightSuffix = "_height.tif";
+			const string heightSuffix = ".tif";
 			const string luminanceSuffix = "_luminance.tif";
 
 			lock (_syncObject)

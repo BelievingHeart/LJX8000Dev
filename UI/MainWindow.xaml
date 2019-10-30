@@ -18,44 +18,55 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="Image Debugger" Height="800" Width="1200"
         WindowState="Maximized" FocusManager.FocusedElement="{Binding ElementName=Frame}">
-        <Window.DataContext>
-                <viewModels:MainWindowViewModel/>
-        </Window.DataContext>
-        <Grid>
+    <Window.DataContext>
+        <viewModels:MainWindowViewModel />
+    </Window.DataContext>
+    <Grid>
 
-                <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <materialDesign:Snackbar Grid.Column="0" Grid.ColumnSpan="2" Panel.ZIndex="10" VerticalAlignment="Center" HorizontalAlignment="Center" MessageQueue="{Binding Path=MessageQueue, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}"/>
+        <!-- Controller selection -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ComboBox Grid.Row="0" ItemsSource="{Binding ControllerNames}"
+                  SelectedValue="{Binding CurrentControllerName}" />
 
-                <ComboBox Grid.Column="0" ItemsSource="{Binding ControllerNames}" SelectedValue="{Binding CurrentControllerName}"/>
-                <ContentControl Grid.Column="1" Content="{Binding CurrentControllerName, Converter={converters:StringToControllerPageConverter}}"></ContentControl>
-                
-                <!-- Side bar logging system -->
-                <Expander Grid.Column="0" Background="Transparent" ExpandDirection="Right" HorizontalAlignment="Left" IsExpanded="{Binding AutoResetFlag,
+        <Grid  Grid.Row="1">    <!-- Controller contents -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="7*" />
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <ContentControl Grid.Column="1"
+                            Content="{Binding CurrentControllerName, Converter={converters:StringToControllerPageConverter}}" />
+
+            <!-- Side bar logging system -->
+            <Expander Grid.Column="0"  Grid.ColumnSpan="2" Background="Transparent" ExpandDirection="Right" HorizontalAlignment="Left"
+                      IsExpanded="{Binding AutoResetFlag,
                   Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">
-                        <Expander.Header>
-                                <TextBlock
-                                        Text="Logs"
-                                        RenderTransformOrigin=".5,.5">
-                                        <TextBlock.LayoutTransform>
-                                                <RotateTransform
-                                                        Angle="90" />
-                                        </TextBlock.LayoutTransform>
-                                </TextBlock>
-                        </Expander.Header>
-            
-                        <ItemsControl ItemsSource="{Binding LogRecords, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">
-                                <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                                <StackPanel>
-                                                        <TextBlock Text="{Binding Message}" FontSize="24" HorizontalAlignment="Left"/>
-                                                        <TextBlock Text="{Binding Time}" FontSize="14" HorizontalAlignment="Right"/>
-                                                </StackPanel>
-                                        </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                </Expander>
-        </Grid>
+                <Expander.Header>
+                    <TextBlock
+                        Text="Logs"
+                        RenderTransformOrigin=".5,.5">
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform
+                                Angle="90" />
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+                </Expander.Header>
+
+                <ItemsControl
+                    ItemsSource="{Binding LogRecords, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <GroupBox Header="{Binding Time}">
+                                <WrapPanel>
+                                    <TextBlock Text="{Binding Message}" FontSize="24"
+                                               HorizontalAlignment="Left" />
+                                </WrapPanel>
+                            </GroupBox>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Expander></Grid>
+    </Grid>
 </Window>

@@ -18,7 +18,6 @@
             <Button Command="{Binding StartHighSpeedCommand}">Start high speed</Button>
             <Button Command="{Binding StopHighSpeedCommand}">Stop high speed</Button>
             <Button Command="{Binding FinalizeHighSpeedCommand}">Finalize high speed</Button>
-            <Button Command="{Binding SaveImageCommand}">Serialize</Button>
             <Button Command="{Binding DisconnectCommand}">Disconnect</Button>
             <GroupBox Header="Image Serialization" Margin="5 20">
                 <StackPanel>
@@ -34,13 +33,13 @@
                         <TextBlock>Profile Count Each Fetch: </TextBlock>
                         <TextBox Margin="5 0" Text="{Binding ProfileCountEachFetch}" />
                     </StackPanel>
-                    <TextBox materialDesign:HintAssist.Hint="Image Directory" Text="{Binding SerializationDirectory}" />
+                    <Button Command="{Binding OpenImageDirCommand}">Open Image Directory</Button>
                 </StackPanel>
             </GroupBox>
 
-            <Border>
+            <Viewbox Height="100" Width="100" Margin="50" HorizontalAlignment="Center">
                 <materialDesign:PackIcon Kind="{Binding Status, Converter={converters:StatusToIconConverter}}" />
-            </Border>
+            </Viewbox>
         </StackPanel>
 
 

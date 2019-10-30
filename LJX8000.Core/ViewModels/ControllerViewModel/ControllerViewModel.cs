@@ -1,5 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
+using System.IO;
+using System.Net.Mime;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using HalconDotNet;
@@ -37,6 +42,8 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         public ICommand StopHighSpeedCommand { get; set; }
         public ICommand FinalizeHighSpeedCommand { get; set; }
         public ICommand SaveImageCommand { get; set; }
+
+        public ICommand OpenImageDirCommand { get; set; }
 
         /// <summary>
         /// Status property
@@ -119,22 +126,19 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             {
                 CollectedRows = 0;
                 CurrentImageIndex++;
-                Task.Run(() =>
-                {
-                    Serialize($"{SerializationDirectory}/{CurrentImageIndex}.tif",
-                        (CurrentImageIndex - 1) * RowsPerImage, RowsPerImage);
-                    if(CurrentImageIndex * RowsPerImage> RowsOverflow)
-                    {
-                        SimpleArrayDataHighSpeed.Clear();
-                    } 
-                });
+                Directory.CreateDirectory(SerializationDirectory);
+                    Serialize($"{SerializationDirectory}/{DateTime.Now.ToString("MMddHHmmss")}.tif",
+                        0, RowsPerImage);
+                    SimpleArrayDataHighSpeed.Clear();
+                    
+               
                 
             }
         }
 
         public int RowsOverflow { get; set; } = 20000;
 
-        public string SerializationDirectory { get; set; } = "C:/Users/ABC/Desktop/Xiaojin/Temp";
+        public string SerializationDirectory => Directory.GetCurrentDirectory() + $"/Images/{IpConfig.ForthByte}/";
 
         private ICommand ResetCurrentImageIndexCommand { get; set; }
 
@@ -255,8 +259,14 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             StartHighSpeedCommand = new RelayCommand(StartHighSpeedCommunication);
             StopHighSpeedCommand = new RelayCommand(StopHighSpeedCommunication);
             FinalizeHighSpeedCommand = new RelayCommand(FinalizeHighSpeedCommunication);
-            SaveImageCommand = new RelayCommand(() => Serialize("C:/Users/ABC/Desktop/Xiaojin/Temp/test.tiff", 0, 800));
             ResetCurrentImageIndexCommand = new RelayCommand(()=>CurrentImageIndex=0);
+            OpenImageDirCommand = new RelayCommand(OpenImageDir);
+        }
+
+        private void OpenImageDir()
+        {
+            Directory.CreateDirectory(SerializationDirectory);
+            Process.Start(SerializationDirectory);
         }
 
         #endregion
