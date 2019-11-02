@@ -303,7 +303,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// <summary>
         /// From stop to disconnect in one step
         /// </summary>
-        private void DisconnectHighSpeed()
+        public void DisconnectHighSpeed()
         {
             StopHighSpeedCommunication();
             FinalizeHighSpeedCommunication();
@@ -313,7 +313,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// <summary>
         /// Connect directly into high speed mode
         /// </summary>
-        private void ConnectHighSpeed()
+        public void ConnectHighSpeed()
         {
             Connect();
             InitHighSpeedCommunicationSimpleArray();

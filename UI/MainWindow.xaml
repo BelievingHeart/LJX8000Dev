@@ -16,8 +16,8 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Image Debugger" Height="800" Width="1200"
-        WindowState="Maximized" FocusManager.FocusedElement="{Binding ElementName=Frame}">
+        Title="Image Debugger" Height="500" Width="700"
+        WindowState="Normal" FocusManager.FocusedElement="{Binding ElementName=Frame}">
     <Window.DataContext>
         <viewModels:MainWindowViewModel />
     </Window.DataContext>
@@ -25,22 +25,44 @@
 
         <!-- Controller selection -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ComboBox Grid.Row="0" ItemsSource="{Binding ControllerNames}"
-                  SelectedValue="{Binding CurrentControllerName}" />
-
-        <Grid  Grid.Row="1">    <!-- Controller contents -->
+        <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="7*" />
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox  ItemsSource="{Binding ControllerNames}"
+                      SelectedValue="{Binding CurrentControllerName}" />
+            
+            <ToggleButton Grid.Column="1"
+                Style="{StaticResource MaterialDesignActionToggleButton}"
+                IsChecked="{Binding IsAllConnected}"
+                ToolTip="Toggle connect-disconnect all controllers">
+                <ToggleButton.Content>
+                    <materialDesign:PackIcon
+                        Kind="Play" />
+                </ToggleButton.Content>
+                <materialDesign:ToggleButtonAssist.OnContent>
+                    <materialDesign:PackIcon
+                        Kind="Stop" />
+                </materialDesign:ToggleButtonAssist.OnContent>
+            </ToggleButton>
+        </Grid>
+
+        
+        <Grid Grid.Row="1">    <!-- Controller contents -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="5*" />
             </Grid.ColumnDefinitions>
             <ContentControl Grid.Column="1"
                             Content="{Binding CurrentControllerName, Converter={converters:StringToControllerPageConverter}}" />
 
             <!-- Side bar logging system -->
-            <Expander Grid.Column="0"  Grid.ColumnSpan="2" Background="Transparent" ExpandDirection="Right" HorizontalAlignment="Left"
+            <Expander Grid.Column="0" Grid.ColumnSpan="2" Background="Transparent" ExpandDirection="Right"
+                      HorizontalAlignment="Left"
                       IsExpanded="{Binding AutoResetFlag,
                   Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">
                 <Expander.Header>
@@ -67,6 +89,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </Expander></Grid>
+            </Expander>
+        </Grid>
     </Grid>
 </Window>
