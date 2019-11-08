@@ -7,6 +7,7 @@ namespace LJX8000.Core.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         private bool _isAllConnected;
+        private bool _shouldSaveAllLuminanceData;
 
         /// <summary>
         /// Controller names by ip address
@@ -35,6 +36,15 @@ namespace LJX8000.Core.ViewModels
             }
         }
 
+        public bool ShouldSaveAllLuminanceData
+        {
+            get { return _shouldSaveAllLuminanceData; }
+            set { _shouldSaveAllLuminanceData = value;
+             if(_shouldSaveAllLuminanceData) EnableAllLuminance();
+             else DisableAllLuminance();
+            }
+        }
+
         private void DisconnectAllHighSpeed()
         {
             foreach (var controller in ControllerManager.AttachedControllers)
@@ -48,6 +58,22 @@ namespace LJX8000.Core.ViewModels
             foreach (var controller in ControllerManager.AttachedControllers)
             {
                 controller.IsConnectedHighSpeed = true;
+            }
+        }
+
+        private void EnableAllLuminance()
+                 {
+                     foreach (var controller in ControllerManager.AttachedControllers)
+                     {
+                         controller.ShouldSaveLuminanceData = true;
+                     }
+                 }
+        
+        private void DisableAllLuminance()
+        {
+            foreach (var controller in ControllerManager.AttachedControllers)
+            {
+                controller.ShouldSaveLuminanceData = false;
             }
         }
     }

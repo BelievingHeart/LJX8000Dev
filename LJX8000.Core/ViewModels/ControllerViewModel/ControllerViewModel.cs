@@ -30,7 +30,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// </summary>
         private HighSpeedDataCallBackForSimpleArray _callbackSimpleArray;
 
-        private int _rowsPerImage = 800;
+        private int _rowsPerImage = 2400;
         private bool _isConnectedHighSpeed = false;
 
         #endregion
@@ -61,6 +61,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
                 }
                 else
                 {
+                    ShouldSaveLuminanceData = false;
                     DisconnectHighSpeed();
                 }
             }
@@ -95,6 +96,10 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
                 CollectedRows = 0;
             }
         }
+
+        public bool ShouldSaveLuminanceData {
+            get { return SimpleArrayDataHighSpeed.IsLuminanceEnable; }
+            set { SimpleArrayDataHighSpeed.IsLuminanceEnable = value; } }
         
         /// <summary>
         /// How many rows within current image index has been collected
@@ -169,7 +174,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             {
                 CollectedRows = 0;
                 Directory.CreateDirectory(SerializationDirectory);
-                    Serialize($"{SerializationDirectory}/{DateTime.Now.ToString("MMddHHmmssffff")}.tif",
+                    Serialize($"{SerializationDirectory}/{DateTime.Now.ToString("MMdd-HHmmss-ffff")}.tif",
                         0, RowsPerImage);
                     SimpleArrayDataHighSpeed.Clear();
                     
@@ -202,7 +207,8 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
 
             SimpleArrayDataHighSpeed.Clear();
             SimpleArrayDataHighSpeed.DataWidth = profileInfo.nProfileDataCount;
-            SimpleArrayDataHighSpeed.IsLuminanceEnable = profileInfo.byLuminanceOutput == 1;
+            // profileInfo.byLuminanceOutput == 1 => The controller was set to output luminance image
+//            ShouldSaveLuminanceData = profileInfo.byLuminanceOutput == 1;
         }
 
         public void StartHighSpeedCommunication()
@@ -303,7 +309,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// <summary>
         /// From stop to disconnect in one step
         /// </summary>
-        public void DisconnectHighSpeed()
+        private void DisconnectHighSpeed()
         {
             StopHighSpeedCommunication();
             FinalizeHighSpeedCommunication();
@@ -313,7 +319,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// <summary>
         /// Connect directly into high speed mode
         /// </summary>
-        public void ConnectHighSpeed()
+        private void ConnectHighSpeed()
         {
             Connect();
             InitHighSpeedCommunicationSimpleArray();

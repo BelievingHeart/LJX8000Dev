@@ -41,7 +41,7 @@
 		/// <summary>Profile data size</summary>
 		public int DataWidth { get; set; }
 		/// <summary>The value indicating whether luminance data output is enable or not</summary>
-		public bool IsLuminanceEnable { private get; set; }
+		public bool IsLuminanceEnable { get; set; }
 		/// <summary>Latest batch number</summary>
 		public int BatchNo { get; private set; }
 
@@ -138,7 +138,7 @@
 				Count = 0;
 				_notify = 0;
 //				DataWidth = 0;
-				IsLuminanceEnable = false;
+//				IsLuminanceEnable = false;
 				_profileData.Clear();
 				_luminanceData.Clear();
 			}

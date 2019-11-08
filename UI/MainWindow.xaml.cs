@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
+using LJX8000.Core.ViewModels.ControllerViewModel;
 
 namespace UI
 {
@@ -17,9 +19,14 @@ namespace UI
         /// Safely close all cameras
         /// </summary>
         /// <param name="e"></param>
-        protected override void OnClosed(EventArgs e)
+        protected override void OnClosing(CancelEventArgs e)
         {
-            base.OnClosed(e);
+            base.OnClosing(e);
+            // Disconnect all controllers
+            foreach (var controller in ControllerManager.AttachedControllers)
+            {
+                controller.IsConnectedHighSpeed = false;
+            }
         }
     }
 }

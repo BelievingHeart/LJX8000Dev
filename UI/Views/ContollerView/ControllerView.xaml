@@ -11,7 +11,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <Grid>
-        <StackPanel>
+        <StackPanel Margin="20">
             <!-- <Button Command="{Binding ConnectCommand}">Connect</Button> -->
             <!-- <Button Command="{Binding InitHighSpeedCommand}">Init simple array</Button> -->
             <!-- <Button Command="{Binding PreStartHighSpeedCommand}">Pre-start</Button> -->
@@ -19,10 +19,19 @@
             <!-- <Button Command="{Binding StopHighSpeedCommand}">Stop high speed</Button> -->
             <!-- <Button Command="{Binding FinalizeHighSpeedCommand}">Finalize high speed</Button> -->
             <!-- <Button Command="{Binding DisconnectCommand}">Disconnect</Button> -->
-            <ToggleButton
-                Style="{StaticResource MaterialDesignSwitchAccentToggleButton}"
-                ToolTip="Toggle to connect and disconnect"
-                IsChecked="{Binding IsConnectedHighSpeed}" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ToggleButton Grid.Column="0" Name="ConnectToggle"
+                    Style="{StaticResource MaterialDesignSwitchAccentToggleButton}"
+                    ToolTip="Toggle to connect and disconnect"
+                    IsChecked="{Binding IsConnectedHighSpeed}" />
+                <CheckBox Grid.Column="1"
+                    Style="{StaticResource MaterialDesignCheckBox}" IsHitTestVisible="{Binding IsChecked, ElementName=ConnectToggle}"
+                    IsChecked="{Binding ShouldSaveLuminanceData}" Content="Luminance output"/>
+            </Grid>
             <GroupBox Header="Image Serialization" Margin="5 20">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

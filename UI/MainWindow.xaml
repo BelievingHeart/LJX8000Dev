@@ -16,7 +16,7 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Image Debugger" Height="500" Width="700"
+        Title="LJX8000 Grabber" Height="500" Width="700"
         WindowState="Normal" FocusManager.FocusedElement="{Binding ElementName=Frame}">
     <Window.DataContext>
         <viewModels:MainWindowViewModel />
@@ -32,11 +32,12 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <ComboBox  ItemsSource="{Binding ControllerNames}"
                       SelectedValue="{Binding CurrentControllerName}" />
             
-            <ToggleButton Grid.Column="1"
+            <ToggleButton Grid.Column="1" Name="ConnectAllToggle"
                 Style="{StaticResource MaterialDesignActionToggleButton}"
                 IsChecked="{Binding IsAllConnected}"
                 ToolTip="Toggle connect-disconnect all controllers">
@@ -49,6 +50,10 @@
                         Kind="Stop" />
                 </materialDesign:ToggleButtonAssist.OnContent>
             </ToggleButton>
+            
+            <CheckBox Grid.Column="2" Margin="10 0" IsHitTestVisible="{Binding IsChecked, ElementName=ConnectAllToggle}"
+                         Style="{StaticResource MaterialDesignCheckBox}"
+                         IsChecked="{Binding ShouldSaveAllLuminanceData}" Content="Enable all luminance output"/>
         </Grid>
 
         
