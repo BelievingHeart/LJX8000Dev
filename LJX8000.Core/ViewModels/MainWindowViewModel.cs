@@ -32,6 +32,7 @@ namespace LJX8000.Core.ViewModels
                 else
                 {
                     DisconnectAllHighSpeed();
+                    ShouldSaveAllLuminanceData = false;
                 }
             }
         }
