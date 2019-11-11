@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Timers;
@@ -36,6 +37,7 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
         /// </summary>
         public ObservableCollection<SideBarMessageItemViewModel.SideBarMessageItemViewModel> LogRecords { get; set; }
 
+        public string SerializationBaseDir { get; set; } = Directory.GetCurrentDirectory() + "/Images";
 
         /// <summary>
         /// Maximum number of messages to show on side bar

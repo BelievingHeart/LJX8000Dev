@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using LJX8000.Core.ViewModels.ControllerViewModel;
 
@@ -44,6 +45,11 @@ namespace LJX8000.Core.ViewModels
              if(_shouldSaveAllLuminanceData) EnableAllLuminance();
              else DisableAllLuminance();
             }
+        }
+
+        public string SerializationBaseDir
+        {
+            set { ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir = string.IsNullOrEmpty(value)? Directory.GetCurrentDirectory() : value; }
         }
 
         private void DisconnectAllHighSpeed()

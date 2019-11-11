@@ -26,9 +26,14 @@
         <!-- Controller selection -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        
+        <!-- Serialization directory -->
+        <TextBox Text="{Binding SerializationBaseDir, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Serialization Directory"/>
+        
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -57,7 +62,7 @@
         </Grid>
 
         
-        <Grid Grid.Row="1">    <!-- Controller contents -->
+        <Grid Grid.Row="2">    <!-- Controller contents -->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5*" />
                 <ColumnDefinition Width="5*" />

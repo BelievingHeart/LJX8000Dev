@@ -185,7 +185,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
 
  
 
-        public string SerializationDirectory => Directory.GetCurrentDirectory() + $"/Images/{IpConfig.ForthByte}/";
+        public string SerializationDirectory => ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir.Replace("\\", "/") + $"/{IpConfig.ForthByte}/";
 
         private ICommand ResetCurrentImageIndexCommand { get; set; }
 
@@ -336,7 +336,15 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         private void OpenImageDir()
         {
             Directory.CreateDirectory(SerializationDirectory);
-            Process.Start(SerializationDirectory);
+
+            try
+            {
+                Process.Start(SerializationDirectory);
+            }
+            catch
+            {
+                Log($"Directory:{SerializationDirectory} not exists");
+            }
         }
         /// <summary>
         /// Connection status acquisition
