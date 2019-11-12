@@ -178,18 +178,27 @@
 
 
 
-		private void SaveTiff(int index, int count, string pathBase)
+		private void SaveTiff(int index, int count, string heightDirAndFileName)
 		{
-			const string heightSuffix = ".tif";
-			const string luminanceSuffix = "_luminance.tif";
+			string heightImageFile = heightDirAndFileName + ".tif";
+		
 
 			lock (_syncObject)
 			{
-				SaveTiffCore(pathBase + heightSuffix, _profileData, index, count);
+				SaveTiffCore(heightImageFile, _profileData, index, count);
 
 				if (IsLuminanceEnable)
 				{
-					SaveTiffCore(pathBase + luminanceSuffix, _luminanceData, index, count);
+					// Determine intensity image output path
+					var fileNameNoExtension = Path.GetFileNameWithoutExtension(heightImageFile);
+					var directoryInfo = Directory.GetParent(heightDirAndFileName).Parent;
+					var scannerDirectory = directoryInfo.FullName;
+					var heightDirName = Path.GetDirectoryName(heightDirAndFileName);
+					var intensityDir = Path.Combine(scannerDirectory, heightDirName + "-Intensity");
+					Directory.CreateDirectory(intensityDir);
+					var intensityImagePath = Path.Combine(intensityDir, fileNameNoExtension + ".tif");
+					
+					SaveTiffCore(intensityImagePath, _luminanceData, index, count);
 				}
 			}
 		}

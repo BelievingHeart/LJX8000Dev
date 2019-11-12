@@ -343,9 +343,12 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             }
             catch
             {
-                Log($"Directory:{SerializationDirectory} not exists");
+                Log($"Directory:{SerializationDirectory} is not valid");
             }
         }
+        
+        
+        
         /// <summary>
         /// Connection status acquisition
         /// </summary>
