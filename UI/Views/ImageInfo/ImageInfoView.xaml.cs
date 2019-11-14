@@ -15,14 +15,20 @@ namespace UI.Views.ImageInfo
         private void ImageInfoView_OnLoaded(object sender, RoutedEventArgs e)
         {
             SmartWindowControlWpf.HalconWindow.SetLut("twelve");
-            SizeChanged += AdaptRatio;
+            AdaptRatio(ActualWidth);
+            
+            SizeChanged += (ss, ee) =>
+            {
+                var currentWidth = ee.NewSize.Width;
+                AdaptRatio(currentWidth);
+            };
         }
 
-        private void AdaptRatio(object sender, SizeChangedEventArgs e)
+        private void AdaptRatio(double currentWidth)
         {
             var dataContext = DataContext as ImageInfoViewModel;
             var ratio = dataContext.ImageWidthRatio;
-            var currentWidth = e.NewSize.Width;
+            
             Height = currentWidth * ratio;
         }
 
