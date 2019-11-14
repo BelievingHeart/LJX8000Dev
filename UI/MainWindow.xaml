@@ -77,10 +77,7 @@
                 <ColumnDefinition Width="5*" />
             </Grid.ColumnDefinitions>
 
-            <!-- Controller view -->
-            <ContentControl Grid.Column="1"
-                            Content="{Binding CurrentControllerName, Converter={converters:StringToControllerPageConverter}}" />
-
+  
             <!-- Image views -->
             <ItemsControl Grid.Column="0"
                           ItemsSource="{Binding AllImagesToShow, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}"
@@ -90,17 +87,20 @@
                         <WrapPanel />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-
-
+                
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <imageInfo:ImageInfoView Margin="5" MinHeight="100" MinWidth="100" />
+                        <imageInfo:ImageInfoView Margin="5" MinHeight="600" MinWidth="600" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
+            <!-- Controller view -->
+            <ContentControl Grid.Column="1"
+                            Content="{Binding CurrentControllerName, Converter={converters:StringToControllerPageConverter}}" />
+
             <!-- Side bar logging system -->
-            <Expander Grid.Column="0" Grid.ColumnSpan="2" Background="Transparent" ExpandDirection="Right"
+            <Expander Grid.Column="0" Grid.ColumnSpan="2" Background="Transparent" ExpandDirection="Right" Panel.ZIndex="10"
                       HorizontalAlignment="Left"
                       IsExpanded="{Binding AutoResetFlag,
                   Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">

@@ -56,7 +56,7 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
         /// <summary>
         /// All the images that will be shown on screen
         /// </summary>
-        public ObservableCollection<ImageInfoViewModel> AllImagesToShow { get; set; } = new ObservableCollection<ImageInfoViewModel>();
+        public List<ImageInfoViewModel> AllImagesToShow { get; set; } = new List<ImageInfoViewModel>();
      
     }
 

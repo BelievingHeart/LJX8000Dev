@@ -367,20 +367,17 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
 
         private void DisplayImageInvoke(HImage heightImage)
         {
+            var controllerName = IpConfig.ToString();
+            var imageList = ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow;
 
- 
-
-
-            Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
+            lock (ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow)
             {
-                var imageList = ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow;
-                var controllerName = IpConfig.ToString();
                 var newImageInfo = new ImageInfoViewModel()
                 {
                     ControllerName = controllerName,
                     Image = heightImage
                 };
-                
+
                 var displayListHasMyImage = imageList.Any(ele => ele.ControllerName == controllerName);
 
                 if (displayListHasMyImage)
@@ -392,10 +389,11 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
                 else
                 {
                     imageList.Add(newImageInfo);
-                    imageList = new ObservableCollection<ImageInfoViewModel>(
-                        imageList.OrderBy(ele => ele.ControllerName));
                 }
-            }), DispatcherPriority.Normal);
+
+     
+                ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow = new List<ImageInfoViewModel>(imageList.OrderBy(ele => ele.ControllerName));
+            }
         }
 
 
@@ -436,6 +434,8 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             {
                 Log($"Directory:{SerializationDirectory} is not valid");
             }
+
+       
         }
 
 

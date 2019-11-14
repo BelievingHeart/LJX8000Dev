@@ -17,5 +17,6 @@
             <halconDotNet:HIconicDisplayObjectWPF IconicObject="{Binding Path=Image}"/>
             <halconDotNet:HMessageDisplayObjectWPF HMessageText="{Binding Path=ControllerName}" Margin="20" VerticalAlignment="Top" HorizontalAlignment="Left"/>
         </halconDotNet:HSmartWindowControlWPF>
+        <TextBlock Text="{Binding ControllerName}"/>
     </Grid>
 </UserControl>
