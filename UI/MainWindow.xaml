@@ -27,6 +27,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -70,8 +71,9 @@
                       IsChecked="{Binding ShouldSaveAllLuminanceData}" Content="Enable all luminance output" />
         </Grid>
 
+        <Slider Grid.Row="2" Name="ImageViewWidthSlider" Maximum="800" Minimum="100"></Slider>
 
-        <Grid Grid.Row="2">    <!-- Controller contents -->
+        <Grid Grid.Row="3">    <!-- Controller contents -->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5*" />
                 <ColumnDefinition Width="5*" />
@@ -90,7 +92,7 @@
                 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <imageInfo:ImageInfoView Margin="5" MinHeight="100" MinWidth="100" />
+                        <imageInfo:ImageInfoView Margin="5" MinWidth="100" Width="{Binding ElementName=ImageViewWidthSlider, Path=Value}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

@@ -21,6 +21,8 @@ namespace LJX8000.Core.ViewModels
         /// </summary>
         public string CurrentControllerName { get; set; }
 
+   
+
         public bool IsAllConnected    
         {
             get { return _isAllConnected; }

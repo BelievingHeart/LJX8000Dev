@@ -7,7 +7,8 @@
              xmlns:halconDotNet="clr-namespace:HalconDotNet;assembly=halcondotnet"
              xmlns:imageInfo="clr-namespace:LJX8000.Core.ViewModels.ImageInfo;assembly=LJX8000.Core"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" Loaded="ImageInfoView_OnLoaded">
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="ImageInfoView_OnLoaded"
+>
     
     <Grid>
         <halconDotNet:HSmartWindowControlWPF Name="SmartWindowControlWpf">
