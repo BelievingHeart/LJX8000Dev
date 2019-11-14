@@ -7,6 +7,7 @@
         xmlns:applicationViewModel="clr-namespace:LJX8000.Core.ViewModels.ApplicationViewModel;assembly=LJX8000.Core"
         xmlns:viewModels="clr-namespace:LJX8000.Core.ViewModels;assembly=LJX8000.Core"
         xmlns:converters="clr-namespace:UI.Converters"
+        xmlns:imageInfo="clr-namespace:UI.Views.ImageInfo"
 
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -23,29 +24,36 @@
     </Window.DataContext>
     <Grid>
 
-        <!-- Controller selection -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <!-- Serialization directory -->
-        <TextBox Text="{Binding SerializationBaseDir, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Serialization Directory"/>
-        
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Text="Image Directory: " Margin="5"/>
+            <TextBox  Text="{Binding SerializationBaseDir, UpdateSourceTrigger=PropertyChanged}"
+                     materialDesign:HintAssist.Hint="Serialization Directory" />
+        </StackPanel>
+
+        <!-- Controller selection -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <ComboBox  ItemsSource="{Binding ControllerNames}"
-                      SelectedValue="{Binding CurrentControllerName}" />
-            
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Controllers: " Margin="5"/>
+                <ComboBox ItemsSource="{Binding ControllerNames}"
+                          SelectedValue="{Binding CurrentControllerName}" MinWidth="200" />
+            </StackPanel>
+
             <ToggleButton Grid.Column="1" Name="ConnectAllToggle"
-                Style="{StaticResource MaterialDesignActionToggleButton}"
-                IsChecked="{Binding IsAllConnected}"
-                ToolTip="Toggle connect-disconnect all controllers">
+                          Style="{StaticResource MaterialDesignActionToggleButton}"
+                          IsChecked="{Binding IsAllConnected}"
+                          ToolTip="Toggle connect-disconnect all controllers">
                 <ToggleButton.Content>
                     <materialDesign:PackIcon
                         Kind="Play" />
@@ -55,20 +63,41 @@
                         Kind="Stop" />
                 </materialDesign:ToggleButtonAssist.OnContent>
             </ToggleButton>
-            
-            <CheckBox Grid.Column="2" Margin="10 0" IsHitTestVisible="{Binding IsChecked, ElementName=ConnectAllToggle}"
-                         Style="{StaticResource MaterialDesignCheckBox}"
-                         IsChecked="{Binding ShouldSaveAllLuminanceData}" Content="Enable all luminance output"/>
+
+            <CheckBox Grid.Column="2" Margin="10 0"
+                      IsHitTestVisible="{Binding IsChecked, ElementName=ConnectAllToggle}"
+                      Style="{StaticResource MaterialDesignCheckBox}"
+                      IsChecked="{Binding ShouldSaveAllLuminanceData}" Content="Enable all luminance output" />
         </Grid>
 
-        
+
         <Grid Grid.Row="2">    <!-- Controller contents -->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5*" />
                 <ColumnDefinition Width="5*" />
             </Grid.ColumnDefinitions>
+
+            <!-- Controller view -->
             <ContentControl Grid.Column="1"
                             Content="{Binding CurrentControllerName, Converter={converters:StringToControllerPageConverter}}" />
+
+            <!-- Image views -->
+            <ItemsControl Grid.Column="0"
+                          ItemsSource="{Binding AllImagesToShow, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}"
+                          Background="Aqua">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <imageInfo:ImageInfoView Margin="5" MinHeight="100" MinWidth="100" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
 
             <!-- Side bar logging system -->
             <Expander Grid.Column="0" Grid.ColumnSpan="2" Background="Transparent" ExpandDirection="Right"

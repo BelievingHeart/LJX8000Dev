@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:UI.Views.ContollerView"
-             xmlns:controllerViewModel="clr-namespace:LJX8000.Core.ViewModels.ControllerViewModel;assembly=LJX8000.Core"
+   
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:converters="clr-namespace:UI.Converters"
              mc:Ignorable="d"
@@ -12,13 +11,6 @@
 
     <Grid>
         <StackPanel Margin="20">
-            <!-- <Button Command="{Binding ConnectCommand}">Connect</Button> -->
-            <!-- <Button Command="{Binding InitHighSpeedCommand}">Init simple array</Button> -->
-            <!-- <Button Command="{Binding PreStartHighSpeedCommand}">Pre-start</Button> -->
-            <!-- <Button Command="{Binding StartHighSpeedCommand}">Start high speed</Button> -->
-            <!-- <Button Command="{Binding StopHighSpeedCommand}">Stop high speed</Button> -->
-            <!-- <Button Command="{Binding FinalizeHighSpeedCommand}">Finalize high speed</Button> -->
-            <!-- <Button Command="{Binding DisconnectCommand}">Disconnect</Button> -->
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -30,7 +22,7 @@
                     IsChecked="{Binding IsConnectedHighSpeed}" />
                 <CheckBox Grid.Column="1"
                     Style="{StaticResource MaterialDesignCheckBox}" IsHitTestVisible="{Binding IsChecked, ElementName=ConnectToggle}"
-                    IsChecked="{Binding ShouldSaveLuminanceData}" Content="Luminance output"/>
+                    IsChecked="{Binding EnableLuminanceData}" Content="Luminance output"/>
             </Grid>
             <GroupBox Header="Image Serialization" Margin="5 20">
                 <StackPanel>

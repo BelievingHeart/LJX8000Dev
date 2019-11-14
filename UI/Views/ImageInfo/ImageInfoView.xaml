@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="UI.Views.ImageInfo.ImageInfoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:UI.Views.ImageInfo"
+             xmlns:halconDotNet="clr-namespace:HalconDotNet;assembly=halcondotnet"
+             xmlns:imageInfo="clr-namespace:LJX8000.Core.ViewModels.ImageInfo;assembly=LJX8000.Core"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="ImageInfoView_OnLoaded">
+<UserControl.DataContext>
+    <imageInfo:ImageInfoViewModel/>
+</UserControl.DataContext>
+    
+    <Grid>
+        <halconDotNet:HSmartWindowControlWPF Name="SmartWindowControlWpf">
+            <halconDotNet:HIconicDisplayObjectWPF IconicObject="{Binding Path=Image}"/>
+            <halconDotNet:HMessageDisplayObjectWPF HMessageText="{Binding Path=ControllerName}" Margin="20" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        </halconDotNet:HSmartWindowControlWPF>
+    </Grid>
+</UserControl>

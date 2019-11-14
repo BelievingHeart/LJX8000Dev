@@ -32,9 +32,9 @@
 		private uint _notify;
 
 		/// <summary>Profile data (simple array)</summary>
-		private readonly List<ushort> _profileData = new List<ushort>();
+		public readonly List<ushort> profileData = new List<ushort>();
 		/// <summary>Luminance data (simple array)</summary>
-		private readonly List<ushort> _luminanceData = new List<ushort>();
+		public readonly List<ushort> luminanceData = new List<ushort>();
 		#endregion
 
 		#region Property
@@ -115,12 +115,12 @@
 				int bufferSize = DataWidth * (int)copyCount;
 				ushort[] buffer = new ushort[bufferSize];
 				CopyUshort(profileBuffer, buffer, bufferSize);
-				_profileData.AddRange(buffer);
+				profileData.AddRange(buffer);
 
 				if (IsLuminanceEnable)
 				{
 					CopyUshort(luminanceBuffer, buffer, bufferSize);
-					_luminanceData.AddRange(buffer);
+					luminanceData.AddRange(buffer);
 				}
 
 				return Count >= Define.BufferFullCount;
@@ -139,8 +139,8 @@
 				_notify = 0;
 //				DataWidth = 0;
 //				IsLuminanceEnable = false;
-				_profileData.Clear();
-				_luminanceData.Clear();
+				profileData.Clear();
+				luminanceData.Clear();
 			}
 		}
 
@@ -157,12 +157,12 @@
 			{
 				if (string.IsNullOrEmpty(filePath)) return false;
 
-				if (DataWidth <= 0 || _profileData == null)
+				if (DataWidth <= 0 || profileData == null)
 				{
 					return false;
 				}
 
-				int profileHeight = _profileData.Count() / DataWidth;
+				int profileHeight = profileData.Count() / DataWidth;
 				if (count <= 0 || index > profileHeight || index + count > profileHeight)
 				{
 					return false;
@@ -185,7 +185,7 @@
 
 			lock (_syncObject)
 			{
-				SaveTiffCore(heightImageFile, _profileData, index, count);
+				SaveTiffCore(heightImageFile, profileData, index, count);
 
 				if (IsLuminanceEnable)
 				{
@@ -198,7 +198,7 @@
 					Directory.CreateDirectory(intensityDir);
 					var intensityImagePath = Path.Combine(intensityDir, fileNameNoExtension + ".tif");
 					
-					SaveTiffCore(intensityImagePath, _luminanceData, index, count);
+					SaveTiffCore(intensityImagePath, luminanceData, index, count);
 				}
 			}
 		}

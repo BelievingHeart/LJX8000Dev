@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using HalconDotNet;
 using LJX8000.Core.ViewModels.ControllerViewModel;
 
 namespace LJX8000.Core.ViewModels
@@ -72,7 +73,7 @@ namespace LJX8000.Core.ViewModels
                  {
                      foreach (var controller in ControllerManager.AttachedControllers)
                      {
-                         controller.ShouldSaveLuminanceData = true;
+                         controller.EnableLuminanceData = true;
                      }
                  }
         
@@ -80,7 +81,7 @@ namespace LJX8000.Core.ViewModels
         {
             foreach (var controller in ControllerManager.AttachedControllers)
             {
-                controller.ShouldSaveLuminanceData = false;
+                controller.EnableLuminanceData = false;
             }
         }
     }

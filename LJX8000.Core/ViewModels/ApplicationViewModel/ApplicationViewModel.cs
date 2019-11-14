@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Timers;
-using LJX8000.Core.ViewModels.ControllerViewModel;
+using HalconDotNet;
+using LJX8000.Core.ViewModels.ImageInfo;
 using MaterialDesignThemes.Wpf;
 
 namespace LJX8000.Core.ViewModels.ApplicationViewModel
@@ -17,8 +15,7 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
             MessageQueue = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(5000)),
             LogRecords = new ObservableCollection<SideBarMessageItemViewModel.SideBarMessageItemViewModel>()
         };
-
-
+        
         /// <summary>
         /// Application wide instance for xaml to bind to
         /// </summary>
@@ -55,6 +52,11 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
             AutoResetFlag = true;
         }
 
+
+        /// <summary>
+        /// All the images that will be shown on screen
+        /// </summary>
+        public ObservableCollection<ImageInfoViewModel> AllImagesToShow { get; set; } = new ObservableCollection<ImageInfoViewModel>();
      
     }
 

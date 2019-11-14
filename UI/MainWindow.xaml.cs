@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Windows;
+﻿using System.ComponentModel;
 using LJX8000.Core.ViewModels.ControllerViewModel;
 
 namespace UI

@@ -1,24 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.Mime;
+using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 using HalconDotNet;
 using LJX8000.Core.Commands;
 using LJX8000.Core.Enums;
 using LJX8000.Core.Helpers;
+using LJX8000.Core.ViewModels.ImageInfo;
 using LJXNative;
 using LJXNative.Data;
 
 namespace LJX8000.Core.ViewModels.ControllerViewModel
 {
-    public class ControllerViewModel : ViewModelBase
+    public sealed class ControllerViewModel : ViewModelBase
     {
         public IpConfigViewModel.IpConfigViewModel IpConfig { get; set; }
+
+        private void OnImageReady(HImage heightImage, HImage intensityImage)
+        {
+            ImageReady?.Invoke(heightImage, intensityImage);
+        }
 
         #region Field
 
@@ -55,13 +65,13 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             set
             {
                 _isConnectedHighSpeed = value;
-                if(_isConnectedHighSpeed)
+                if (_isConnectedHighSpeed)
                 {
                     ConnectHighSpeed();
                 }
                 else
                 {
-                    ShouldSaveLuminanceData = false;
+                    EnableLuminanceData = false;
                     DisconnectHighSpeed();
                 }
             }
@@ -83,7 +93,6 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         }
 
 
-
         /// <summary>
         /// How many lines is needed to compose an image
         /// </summary>
@@ -97,15 +106,17 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             }
         }
 
-        public bool ShouldSaveLuminanceData {
+        public bool EnableLuminanceData
+        {
             get { return SimpleArrayDataHighSpeed.IsLuminanceEnable; }
-            set { SimpleArrayDataHighSpeed.IsLuminanceEnable = value; } }
-        
+            set { SimpleArrayDataHighSpeed.IsLuminanceEnable = value; }
+        }
+
         /// <summary>
         /// How many rows within current image index has been collected
         /// </summary>
         private int CollectedRows { get; set; }
-        
+
         /// <summary>
         /// How many lines of profiles should be fetched for each data communication invoke
         /// </summary>
@@ -123,6 +134,9 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// </summary>
         private static int _okFlag = (int) Rc.Ok;
 
+
+        public event Action<HImage, HImage> ImageReady;
+
         /// <summary>
         /// Connect to the controller
         /// </summary>
@@ -132,7 +146,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             // Bind device id to this class or rather this ip
             var success = NativeMethods.LJX8IF_EthernetOpen(DeviceId, ref ip) == _okFlag;
             if (!success) Log($"Open connection failed at {IpConfig}");
-       
+
             Status = success ? DeviceStatus.Ethernet : DeviceStatus.NoConnection;
             IpConfig = ip.ToViewModel();
         }
@@ -143,14 +157,12 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             SimpleArrayDataHighSpeed.Clear();
             var nativeIp = IpConfig.ToNative();
             var success = NativeMethods.LJX8IF_InitializeHighSpeedDataCommunicationSimpleArray(DeviceId, ref nativeIp,
-                HighSpeedPort, _callbackSimpleArray, ProfileCountEachFetch, (uint) DeviceId) == _okFlag;
-            if(success)
+                              HighSpeedPort, _callbackSimpleArray, ProfileCountEachFetch, (uint) DeviceId) == _okFlag;
+            if (success)
             {
                 Status = DeviceStatus.EthernetFast;
             }
         }
-
-  
 
 
         /// <summary>
@@ -169,25 +181,36 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         {
             IsBufferFull = SimpleArrayDataHighSpeed.AddReceivedData(profileBuffer, luminanceBuffer, count);
             SimpleArrayDataHighSpeed.Notify = notify;
-            CollectedRows += (int)count;
+            CollectedRows += (int) count;
             if (CollectedRows == RowsPerImage)
             {
                 CollectedRows = 0;
                 Directory.CreateDirectory(SerializationDirectory);
-                    Serialize($"{SerializationDirectory}/{DateTime.Now.ToString("MMdd-HHmmss-ffff")}.tif",
-                        0, RowsPerImage);
-                    SimpleArrayDataHighSpeed.Clear();
-                    
-               
-                
+
+                OnImageReady(
+                    ToHImage(SimpleArrayDataHighSpeed.profileData.ToArray(), SimpleArrayDataHighSpeed.DataWidth,
+                        RowsPerImage),
+                    EnableLuminanceData
+                        ? ToHImage(SimpleArrayDataHighSpeed.luminanceData.ToArray(), SimpleArrayDataHighSpeed.DataWidth,
+                            RowsPerImage)
+                        : null
+                );
+
+
+                SimpleArrayDataHighSpeed.Clear();
             }
         }
 
- 
 
-        public string SerializationDirectory => ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir.Replace("\\", "/") + $"/{IpConfig.ForthByte}/";
+        public bool ShouldHeightImageSerialize { get; set; } = true;
+        public bool ShouldIntensityImageSerialize { get; set; } = false;
 
-        private ICommand ResetCurrentImageIndexCommand { get; set; }
+        public string SerializationDirectory =>
+            ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir.Replace("\\", "/");
+
+        private string HeightImageDir => SerializationDirectory + $"/{IpConfig.ForthByte}/";
+        private string IntensityImageDir => SerializationDirectory + $"/{IpConfig.ForthByte}-Intensity/";
+
 
         public void PreStartHighSpeedCommunication()
         {
@@ -221,10 +244,8 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             {
                 Log("Failed to start high speed communication");
             }
-         
         }
-        
-        
+
 
         public void StopHighSpeedCommunication()
         {
@@ -253,20 +274,61 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             if (success) Status = DeviceStatus.NoConnection;
         }
 
-        public void Serialize(string path, int start, int count)
+        private void Serialize(HImage heightImage, HImage intensityImage)
         {
-            if (SimpleArrayDataHighSpeed.DataWidth == 0)
+            var imageName = DateTime.Now.ToString("MMdd-HHmmss-ffff") + ".tif";
+
+            if (ShouldHeightImageSerialize && heightImage != null)
             {
-                Log("Failed to serialize > data width == 0");
-                return;
+                Directory.CreateDirectory(HeightImageDir);
+                heightImage.WriteImage("tiff", 0, Path.Combine(HeightImageDir, imageName));
             }
 
-            SimpleArrayDataHighSpeed.SaveDataAsImages(path, start, count);
+            if (ShouldIntensityImageSerialize && intensityImage != null)
+            {
+                Directory.CreateDirectory(IntensityImageDir);
+                intensityImage.WriteImage("tiff", 0, Path.Combine(IntensityImageDir, imageName));
+            }
+        }
+
+
+        /// <summary>
+        /// Convert ushort array to <see cref="HImage"/>
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        private HImage ToHImage(ushort[] data, int width, int height)
+        {
+            GCHandle pinnedArray = GCHandle.Alloc(data, GCHandleType.Pinned);
+            IntPtr pointer = pinnedArray.AddrOfPinnedObject();
+
+
+            HImage image = new HImage("uint2", width, height, pointer);
+
+//            CopyToImage(data, image, width, height);
+            image.WriteImage("tiff", 0, IpConfig.ToString() + ".tif");
+            pinnedArray.Free();
+            return image;
+        }
+
+        private void CopyToImage(ushort[] data, HImage image, int width, int height)
+        {
+            image.GenImageConst("uint2", width, height);
+            for (int row = 0; row < height; row++)
+            {
+                for (int col = 0; col < width; col++)
+                {
+                    image.SetGrayval(row, col, data[width * row + col]);
+                }
+            }
         }
 
 
         public bool IsBufferFull { get; set; }
 
+        public HWindow WindowHandle { get; set; }
 
 
         private static void Log(string msg)
@@ -298,13 +360,44 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             StopHighSpeedCommand = new RelayCommand(StopHighSpeedCommunication);
             FinalizeHighSpeedCommand = new RelayCommand(FinalizeHighSpeedCommunication);
             OpenImageDirCommand = new RelayCommand(OpenImageDir);
-            
-            
-            
+
+            ImageReady += (heightImage, intensityImage) => { DisplayImageInvoke(heightImage); };
+            ImageReady += Serialize;
         }
-        
-        
-        
+
+        private void DisplayImageInvoke(HImage heightImage)
+        {
+
+ 
+
+
+            Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
+            {
+                var imageList = ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow;
+                var controllerName = IpConfig.ToString();
+                var newImageInfo = new ImageInfoViewModel()
+                {
+                    ControllerName = controllerName,
+                    Image = heightImage
+                };
+                
+                var displayListHasMyImage = imageList.Any(ele => ele.ControllerName == controllerName);
+
+                if (displayListHasMyImage)
+                {
+                    var previousImageInfo = imageList.First(ele => ele.ControllerName == controllerName);
+                    var myIndexInImageList = imageList.IndexOf(previousImageInfo);
+                    imageList[myIndexInImageList] = newImageInfo;
+                }
+                else
+                {
+                    imageList.Add(newImageInfo);
+                    imageList = new ObservableCollection<ImageInfoViewModel>(
+                        imageList.OrderBy(ele => ele.ControllerName));
+                }
+            }), DispatcherPriority.Normal);
+        }
+
 
         /// <summary>
         /// From stop to disconnect in one step
@@ -326,13 +419,11 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             PreStartHighSpeedCommunication();
             StartHighSpeedCommunication();
         }
-        
-        
 
         #endregion
 
         #region Method
-        
+
         private void OpenImageDir()
         {
             Directory.CreateDirectory(SerializationDirectory);
@@ -346,9 +437,8 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
                 Log($"Directory:{SerializationDirectory} is not valid");
             }
         }
-        
-        
-        
+
+
         /// <summary>
         /// Connection status acquisition
         /// </summary>
