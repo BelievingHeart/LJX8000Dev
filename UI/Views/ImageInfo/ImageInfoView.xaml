@@ -8,9 +8,6 @@
              xmlns:imageInfo="clr-namespace:LJX8000.Core.ViewModels.ImageInfo;assembly=LJX8000.Core"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" Loaded="ImageInfoView_OnLoaded">
-<UserControl.DataContext>
-    <imageInfo:ImageInfoViewModel/>
-</UserControl.DataContext>
     
     <Grid>
         <halconDotNet:HSmartWindowControlWPF Name="SmartWindowControlWpf">

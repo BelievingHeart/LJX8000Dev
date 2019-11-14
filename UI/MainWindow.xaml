@@ -90,7 +90,7 @@
                 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <imageInfo:ImageInfoView Margin="5" MinHeight="600" MinWidth="600" />
+                        <imageInfo:ImageInfoView Margin="5" MinHeight="100" MinWidth="100" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
