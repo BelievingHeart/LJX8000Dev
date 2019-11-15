@@ -1,7 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
+using System.Windows.Input;
+using System.Windows.Threading;
 using HalconDotNet;
+using LJX8000.Core.Commands;
 using LJX8000.Core.ViewModels.ControllerViewModel;
 
 namespace LJX8000.Core.ViewModels
@@ -21,6 +27,13 @@ namespace LJX8000.Core.ViewModels
         /// </summary>
         public string CurrentControllerName { get; set; }
 
+        public ICommand OpenImageDirCommand { get; set; }
+
+        public MainWindowViewModel()
+        {
+            OpenImageDirCommand = new RelayCommand(OpenImageDir);
+
+        }
    
 
         public bool IsAllConnected    
@@ -49,12 +62,24 @@ namespace LJX8000.Core.ViewModels
              else DisableAllLuminance();
             }
         }
+        
 
-        public string SerializationBaseDir
+        private void OpenImageDir()
         {
-            set { ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir = string.IsNullOrEmpty(value)? Directory.GetCurrentDirectory() : value; }
-        }
+            var dir = ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir;
+            Directory.CreateDirectory(dir);
 
+            try
+            {
+                Process.Start(dir);
+            }
+            catch
+            {
+                IoC.IoC.Log($"Directory:{dir} is not valid");
+            }
+
+        }
+        
         private void DisconnectAllHighSpeed()
         {
             foreach (var controller in ControllerManager.AttachedControllers)

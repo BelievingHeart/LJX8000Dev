@@ -54,7 +54,6 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         public ICommand StartHighSpeedCommand { get; set; }
         public ICommand StopHighSpeedCommand { get; set; }
         public ICommand FinalizeHighSpeedCommand { get; set; }
-        public ICommand OpenImageDirCommand { get; set; }
 
         /// <summary>
         /// If this controller is connected in high-speed mode
@@ -188,15 +187,12 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
                 Directory.CreateDirectory(SerializationDirectory);
 
                 OnImageReady(
-                    ToHImage(SimpleArrayDataHighSpeed.profileData.ToArray(), SimpleArrayDataHighSpeed.DataWidth,
-                        RowsPerImage),
-                    EnableLuminanceData
-                        ? ToHImage(SimpleArrayDataHighSpeed.luminanceData.ToArray(), SimpleArrayDataHighSpeed.DataWidth,
-                            RowsPerImage)
+                    ToHImage(SimpleArrayDataHighSpeed.profileData.ToArray(), SimpleArrayDataHighSpeed.DataWidth, RowsPerImage),
+                    EnableLuminanceData ? 
+                        ToHImage(SimpleArrayDataHighSpeed.luminanceData.ToArray(), SimpleArrayDataHighSpeed.DataWidth, RowsPerImage)
                         : null
                 );
-
-
+                
                 SimpleArrayDataHighSpeed.Clear();
             }
         }
@@ -206,7 +202,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         public bool ShouldIntensityImageSerialize { get; set; } = false;
 
         public string SerializationDirectory =>
-            ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir.Replace("\\", "/");
+            ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir;
 
         private string HeightImageDir => SerializationDirectory + $"/{IpConfig.ForthByte}/";
         private string IntensityImageDir => SerializationDirectory + $"/{IpConfig.ForthByte}-Intensity/";
@@ -359,7 +355,6 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             StartHighSpeedCommand = new RelayCommand(StartHighSpeedCommunication);
             StopHighSpeedCommand = new RelayCommand(StopHighSpeedCommunication);
             FinalizeHighSpeedCommand = new RelayCommand(FinalizeHighSpeedCommunication);
-            OpenImageDirCommand = new RelayCommand(OpenImageDir);
 
             ImageReady += (heightImage, intensityImage) => { DisplayImageInvoke(heightImage); };
             ImageReady += Serialize;
@@ -422,21 +417,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
 
         #region Method
 
-        private void OpenImageDir()
-        {
-            Directory.CreateDirectory(SerializationDirectory);
 
-            try
-            {
-                Process.Start(SerializationDirectory);
-            }
-            catch
-            {
-                Log($"Directory:{SerializationDirectory} is not valid");
-            }
-
-       
-        }
 
 
         /// <summary>

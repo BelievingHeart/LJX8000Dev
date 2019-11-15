@@ -18,7 +18,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="LJX8000 Grabber" Height="500" Width="700"
-        WindowState="Normal" FocusManager.FocusedElement="{Binding ElementName=Frame}">
+        WindowState="Maximized" FocusManager.FocusedElement="{Binding ElementName=Frame}">
     <Window.DataContext>
         <viewModels:MainWindowViewModel />
     </Window.DataContext>
@@ -33,76 +33,100 @@
 
         <!-- Serialization directory -->
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <TextBlock Text="Image Directory: " Margin="5"/>
-            <TextBox  Text="{Binding SerializationBaseDir, UpdateSourceTrigger=PropertyChanged}"
-                     materialDesign:HintAssist.Hint="Serialization Directory" />
+            <TextBox Text="{Binding SerializationBaseDir, UpdateSourceTrigger=PropertyChanged}"
+                     materialDesign:HintAssist.Hint="Serialization Directory" MinWidth="300" />
+            <Button Command="{Binding OpenImageDirCommand}">
+                <materialDesign:PackIcon Kind="FolderImage"></materialDesign:PackIcon>
+            </Button>
         </StackPanel>
 
-        <!-- Controller selection -->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Controllers: " Margin="5"/>
-                <ComboBox ItemsSource="{Binding ControllerNames}"
-                          SelectedValue="{Binding CurrentControllerName}" MinWidth="200" />
-            </StackPanel>
+     
 
-            <ToggleButton Grid.Column="1" Name="ConnectAllToggle"
-                          Style="{StaticResource MaterialDesignActionToggleButton}"
-                          IsChecked="{Binding IsAllConnected}"
-                          ToolTip="Toggle connect-disconnect all controllers">
-                <ToggleButton.Content>
-                    <materialDesign:PackIcon
-                        Kind="Play" />
-                </ToggleButton.Content>
-                <materialDesign:ToggleButtonAssist.OnContent>
-                    <materialDesign:PackIcon
-                        Kind="Stop" />
-                </materialDesign:ToggleButtonAssist.OnContent>
-            </ToggleButton>
-
-            <CheckBox Grid.Column="2" Margin="10 0"
-                      IsHitTestVisible="{Binding IsChecked, ElementName=ConnectAllToggle}"
-                      Style="{StaticResource MaterialDesignCheckBox}"
-                      IsChecked="{Binding ShouldSaveAllLuminanceData}" Content="Enable all luminance output" />
-        </Grid>
-
-        <Slider Grid.Row="2" Name="ImageViewWidthSlider" Maximum="800" Minimum="100"></Slider>
 
         <Grid Grid.Row="3">    <!-- Controller contents -->
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5*" />
-                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="250" />
             </Grid.ColumnDefinitions>
 
-  
+
             <!-- Image views -->
-            <ItemsControl Grid.Column="0"
-                          ItemsSource="{Binding AllImagesToShow, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}"
-                          Background="Aqua">
+            <ItemsControl Grid.Column="0" Grid.RowSpan="2"
+                          ItemsSource="{Binding AllImagesToShow, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-                
+
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <imageInfo:ImageInfoView Margin="5" MinWidth="100" Width="{Binding ElementName=ImageViewWidthSlider, Path=Value}"/>
+                        <imageInfo:ImageInfoView Margin="5" MinWidth="100"
+                                                 Width="{Binding ElementName=ImageViewWidthSlider, Path=Value}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <!-- Controller view -->
-            <ContentControl Grid.Column="1"
-                            Content="{Binding CurrentControllerName, Converter={converters:StringToControllerPageConverter}}" />
+            <!-- Global Settings -->
+            <GroupBox Grid.Column="1" Grid.Row="0" Header="Global Settings">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Slider Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Name="ImageViewWidthSlider" Maximum="800" Minimum="100" Orientation="Vertical"
+                            ToolTip="Adjust image size"/>
+
+
+                    <ToggleButton Margin="5 0" Grid.Row="0" Grid.Column="1" Name="ConnectAllToggle" VerticalAlignment="Top"
+                                  Style="{StaticResource MaterialDesignActionToggleButton}"
+                                  IsChecked="{Binding IsAllConnected}"
+                                  ToolTip="Toggle connect-disconnect all controllers">
+                        <ToggleButton.Content>
+                            <materialDesign:PackIcon
+                                Kind="Play" />
+                        </ToggleButton.Content>
+                        <materialDesign:ToggleButtonAssist.OnContent>
+                            <materialDesign:PackIcon
+                                Kind="Stop" />
+                        </materialDesign:ToggleButtonAssist.OnContent>
+                    </ToggleButton>
+
+                    <CheckBox Grid.Row="0" Grid.Column="2" Margin="10 0" VerticalAlignment="Top"
+                              IsHitTestVisible="{Binding IsChecked, ElementName=ConnectAllToggle}"
+                              Style="{StaticResource MaterialDesignCheckBox}"
+                              IsChecked="{Binding ShouldSaveAllLuminanceData}" Content="Enable all luminance" />
+                </Grid>
+            </GroupBox>
+            
+            <!-- Individual controller view -->
+            <GroupBox Grid.Column="1" Grid.Row="1" Header="Individual Controller Settings">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Controllers: " Margin="5" />
+                        <ComboBox ItemsSource="{Binding ControllerNames}"
+                                  SelectedValue="{Binding CurrentControllerName}" MinWidth="200" />
+
+                    </StackPanel>
+                    <ContentControl
+                        Content="{Binding CurrentControllerName, Converter={converters:StringToControllerPageConverter}}" />
+                </StackPanel>
+            </GroupBox>
 
             <!-- Side bar logging system -->
-            <Expander Grid.Column="0" Grid.ColumnSpan="2" Background="Transparent" ExpandDirection="Right" Panel.ZIndex="10"
+            <Expander Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2" Background="Transparent"
+                      ExpandDirection="Right"
+                      Panel.ZIndex="10"
                       HorizontalAlignment="Left"
                       IsExpanded="{Binding AutoResetFlag,
                   Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">

@@ -11,35 +11,35 @@
 
     <Grid>
         <StackPanel Margin="20">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <ToggleButton Grid.Column="0" Name="ConnectToggle"
+            
+            <StackPanel Orientation="Horizontal">
+           
+                <!-- Connect toggle -->
+                <ToggleButton Name="ConnectToggle" Margin="5 0"
                     Style="{StaticResource MaterialDesignSwitchAccentToggleButton}"
                     ToolTip="Toggle to connect and disconnect"
                     IsChecked="{Binding IsConnectedHighSpeed}" />
-                <CheckBox Grid.Column="1"
+                <!-- Luminance data checkbox -->
+                <CheckBox 
                     Style="{StaticResource MaterialDesignCheckBox}" IsHitTestVisible="{Binding IsChecked, ElementName=ConnectToggle}"
                     IsChecked="{Binding EnableLuminanceData}" Content="Luminance output"/>
-            </Grid>
-            <GroupBox Header="Image Serialization" Margin="5 20">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBlock>Rows Per Image: </TextBlock>
-                        <materialDesign:Badged Badge="{Binding CollectedRows}">
-                            <TextBox Margin="5 0" Text="{Binding RowsPerImage, UpdateSourceTrigger=PropertyChanged}" />
-                        </materialDesign:Badged>
-                    </StackPanel>
+            </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBlock>Profile Count Each Fetch: </TextBlock>
+            <materialDesign:Card Margin="5">
+                <StackPanel>
+                    <!-- Rows per image -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <TextBlock Padding="0 5">Rows Per Image: </TextBlock>
+                        <TextBox Margin="5 0" Text="{Binding RowsPerImage, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                    <Separator/>
+                    <!-- Rows per fetch -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <TextBlock Padding="0 5">Profile Count Each Fetch: </TextBlock>
                         <TextBox Margin="5 0" Text="{Binding ProfileCountEachFetch}" />
                     </StackPanel>
                     <Button Command="{Binding OpenImageDirCommand}">Open Image Directory</Button>
-                </StackPanel>
-            </GroupBox>
+                </StackPanel></materialDesign:Card>
 
             <Viewbox Height="100" Width="100" Margin="50" HorizontalAlignment="Center">
                 <Grid>

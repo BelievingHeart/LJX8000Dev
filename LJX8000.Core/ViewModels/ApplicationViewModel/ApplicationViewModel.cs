@@ -15,7 +15,9 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
             MessageQueue = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(5000)),
             LogRecords = new ObservableCollection<SideBarMessageItemViewModel.SideBarMessageItemViewModel>()
         };
-        
+
+        private string _serializationBaseDir;
+
         /// <summary>
         /// Application wide instance for xaml to bind to
         /// </summary>
@@ -34,7 +36,14 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
         /// </summary>
         public ObservableCollection<SideBarMessageItemViewModel.SideBarMessageItemViewModel> LogRecords { get; set; }
 
-        public string SerializationBaseDir { get; set; } = Directory.GetCurrentDirectory() + "/Images";
+        public string SerializationBaseDir        
+        {
+            get
+            {
+                return string.IsNullOrEmpty(_serializationBaseDir)?Directory.GetCurrentDirectory() + "/Images" : _serializationBaseDir.Replace("\\", "/") ;
+            }
+            set { _serializationBaseDir = value; }
+        }
 
         /// <summary>
         /// Maximum number of messages to show on side bar
