@@ -34,7 +34,19 @@ namespace LJX8000.Core.ViewModels
             OpenImageDirCommand = new RelayCommand(OpenImageDir);
 
         }
-   
+
+        public bool ShouldSaveImages
+        {
+            get { return  ControllerManager.AttachedControllers.All(ele=>ele.ShouldSaveImage); }
+            set
+            {
+                foreach (var controller in ControllerManager.AttachedControllers)
+                {
+                    controller.ShouldSaveImage = value;
+                }
+            }
+        }
+
 
         public bool IsAllConnected    
         {

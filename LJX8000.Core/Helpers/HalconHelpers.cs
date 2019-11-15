@@ -13,8 +13,6 @@ namespace LJX8000.Core.Helpers
         /// <returns></returns>
         public static HImage ScaleValidRangeUShort(this HImage image, int epslon)
         {
-            var imageType = image.GetImageType();
-            Trace.Assert(imageType.ToString() == "uint2");
 
             HTuple width, height, min, max, range;
             // Determine invalid range
@@ -32,7 +30,8 @@ namespace LJX8000.Core.Helpers
             double scaleFactor = 65535 / (max - min);
             var imageScale = imageSub.ScaleImage(scaleFactor, 0);
 
-            return imageScale.ConvertImageType("uint2");
+            imageScale.WriteImage("tiff", 0, "test.tif");
+            return imageScale;
         }
     }
 }

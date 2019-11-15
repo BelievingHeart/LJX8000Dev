@@ -76,6 +76,11 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             }
         }
 
+/// <summary>
+/// Whether to save image or not
+/// </summary>
+        public bool ShouldSaveImage { get; set; } = true;
+
 
         /// <summary>
         /// Status property
@@ -198,7 +203,6 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         }
 
 
-        public bool ShouldHeightImageSerialize { get; set; } = true;
         public bool ShouldIntensityImageSerialize { get; set; } = false;
 
         public string SerializationDirectory =>
@@ -273,8 +277,9 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         private void Serialize(HImage heightImage, HImage intensityImage)
         {
             var imageName = DateTime.Now.ToString("MMdd-HHmmss-ffff") + ".tif";
-
-            if (ShouldHeightImageSerialize && heightImage != null)
+            if (!ShouldSaveImage) return;
+            
+            if (heightImage != null)
             {
                 Directory.CreateDirectory(HeightImageDir);
                 heightImage.WriteImage("tiff", 0, Path.Combine(HeightImageDir, imageName));
@@ -302,9 +307,6 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
 
 
             HImage image = new HImage("uint2", width, height, pointer);
-
-//            CopyToImage(data, image, width, height);
-            image.WriteImage("tiff", 0, IpConfig.ToString() + ".tif");
             pinnedArray.Free();
             return image;
         }
@@ -370,7 +372,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
                 var newImageInfo = new ImageInfoViewModel()
                 {
                     ControllerName = controllerName,
-                    Image = heightImage
+                    Image = heightImage.ScaleValidRangeUShort(50)
                 };
 
                 var displayListHasMyImage = imageList.Any(ele => ele.ControllerName == controllerName);
