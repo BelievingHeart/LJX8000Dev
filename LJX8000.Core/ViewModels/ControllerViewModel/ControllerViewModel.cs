@@ -46,6 +46,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         #endregion
 
         #region Property
+
         public string ControllerName => IpConfig.ToString();
 
         /// <summary>
@@ -82,9 +83,9 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             }
         }
 
-/// <summary>
-/// Whether to save image or not
-/// </summary>
+        /// <summary>
+        /// Whether to save image or not
+        /// </summary>
         public bool ShouldSaveImage { get; set; } = true;
 
 
@@ -201,20 +202,21 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
                     Log("Error: profileData.Count == 0 on image ready ");
                     return;
                 }
-                
-                OnImageReady(
-                    ToHImage(SimpleArrayDataHighSpeed.profileData.ToArray(), SimpleArrayDataHighSpeed.DataWidth, RowsPerImage),
-                    EnableLuminanceData ? 
-                        ToHImage(SimpleArrayDataHighSpeed.luminanceData.ToArray(), SimpleArrayDataHighSpeed.DataWidth, RowsPerImage)
-                        : null
-                );
-                
+
+                var heightImage = ToHImage(SimpleArrayDataHighSpeed.profileData.ToArray(),
+                    SimpleArrayDataHighSpeed.DataWidth, RowsPerImage);
+                var intensityImage = EnableLuminanceData ? 
+                    ToHImage(SimpleArrayDataHighSpeed.luminanceData.ToArray(), SimpleArrayDataHighSpeed.DataWidth, RowsPerImage)
+                    : null;
+                HTuple width, height;
+                intensityImage.GetImageSize(out width, out height);
+                OnImageReady(heightImage, intensityImage);
+
                 SimpleArrayDataHighSpeed.Clear();
             }
         }
 
 
-        public bool ShouldIntensityImageSerialize { get; set; } = false;
 
         public string SerializationDirectory =>
             ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir;
@@ -289,14 +291,14 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         {
             var imageName = DateTime.Now.ToString("MMdd-HHmmss-ffff") + ".tif";
             if (!ShouldSaveImage) return;
-            
+
             if (heightImage != null)
             {
                 Directory.CreateDirectory(HeightImageDir);
                 heightImage.WriteImage("tiff", 0, Path.Combine(HeightImageDir, imageName));
             }
 
-            if (ShouldIntensityImageSerialize && intensityImage != null)
+            if (intensityImage != null)
             {
                 Directory.CreateDirectory(IntensityImageDir);
                 intensityImage.WriteImage("tiff", 0, Path.Combine(IntensityImageDir, imageName));
@@ -378,7 +380,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             var controllerName = ControllerName;
             var imageList = ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow;
             var visualization = heightImage;
-            
+
             lock (ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow)
             {
                 var newImageInfo = new ImageInfoViewModel()
@@ -393,26 +395,24 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
                 {
                     var previousImageInfo = imageList.First(ele => ele.ControllerName == controllerName);
                     // Remove displayed image if should not display
-                    if(!ShouldImageBeDisplayed) imageList.Remove(previousImageInfo);
+                    if (!ShouldImageBeDisplayed) imageList.Remove(previousImageInfo);
                     // Else update the displayed image
                     else
                     {
                         var myIndexInImageList = imageList.IndexOf(previousImageInfo);
                         imageList[myIndexInImageList] = newImageInfo;
-                        
                     }
-                    
                 }
-                else if(ShouldImageBeDisplayed)
+                else if (ShouldImageBeDisplayed)
                 {
                     imageList.Add(newImageInfo);
                 }
 
-     
-                ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow = new List<ImageInfoViewModel>(imageList.OrderBy(ele => ele.ControllerName));
+
+                ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow =
+                    new List<ImageInfoViewModel>(imageList.OrderBy(ele => ele.ControllerName));
             }
         }
-
 
 
         /// <summary>
@@ -439,9 +439,6 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         #endregion
 
         #region Method
-
-
-
 
         /// <summary>
         /// Connection status acquisition

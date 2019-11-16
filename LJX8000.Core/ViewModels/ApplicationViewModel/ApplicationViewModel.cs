@@ -27,6 +27,12 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
             get { return _Instance; }
         }
 
+        public ApplicationViewModel()
+        {
+        }
+        
+        #region Properties
+
         /// <summary>
         /// Message queue for ui logging
         /// </summary>
@@ -51,6 +57,25 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
         /// </summary>
         public int MaxMessages { get; set; } = 300;
 
+
+
+
+        /// <summary>
+        /// All the images that will be shown on screen
+        /// </summary>
+        public List<ImageInfoViewModel> AllImagesToShow { get; set; } = new List<ImageInfoViewModel>();
+
+        /// <summary>
+        /// Synchronization object for <see cref="AllImagesToShow"/>
+        /// </summary>
+        public object LockerOfAllImagesToShow { get; set; } = new object();
+
+
+        public List<ControllerViewModel.ControllerViewModel> AttachedControllers => ControllerManager.AttachedControllers;
+
+        
+
+        #endregion
         /// <summary>
         /// Enqueue logging messages to the side bar
         /// </summary>
@@ -61,16 +86,6 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
             if(LogRecords.Count > MaxMessages) LogRecords.RemoveAt(0);
             AutoResetFlag = true;
         }
-
-
-        /// <summary>
-        /// All the images that will be shown on screen
-        /// </summary>
-        public List<ImageInfoViewModel> AllImagesToShow { get; set; } = new List<ImageInfoViewModel>();
-
-
-        public List<ControllerViewModel.ControllerViewModel> AttachedControllers => ControllerManager.AttachedControllers;
-
     }
 
 }
