@@ -1,0 +1,2 @@
+1. Doesn't save intensity images
+2. Starting with non-default image size will crash

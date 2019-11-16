@@ -40,12 +40,18 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// </summary>
         private HighSpeedDataCallBackForSimpleArray _callbackSimpleArray;
 
-        private int _rowsPerImage = 2400;
+        private int _rowsPerImage = 800;
         private bool _isConnectedHighSpeed = false;
 
         #endregion
 
         #region Property
+        public string ControllerName => IpConfig.ToString();
+
+        /// <summary>
+        /// Whether the received image should be displayed
+        /// </summary>
+        public bool ShouldImageBeDisplayed { get; set; } = true;
 
         public ICommand ConnectCommand { get; set; }
         public ICommand DisconnectCommand { get; set; }
@@ -190,7 +196,12 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             {
                 CollectedRows = 0;
                 Directory.CreateDirectory(SerializationDirectory);
-
+                if (SimpleArrayDataHighSpeed.profileData.Count == 0)
+                {
+                    Log("Error: profileData.Count == 0 on image ready ");
+                    return;
+                }
+                
                 OnImageReady(
                     ToHImage(SimpleArrayDataHighSpeed.profileData.ToArray(), SimpleArrayDataHighSpeed.DataWidth, RowsPerImage),
                     EnableLuminanceData ? 
@@ -364,15 +375,16 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
 
         private void DisplayImageInvoke(HImage heightImage)
         {
-            var controllerName = IpConfig.ToString();
+            var controllerName = ControllerName;
             var imageList = ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow;
-
+            var visualization = heightImage;
+            
             lock (ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow)
             {
                 var newImageInfo = new ImageInfoViewModel()
                 {
                     ControllerName = controllerName,
-                    Image = heightImage.ScaleValidRangeUShort(50)
+                    Image = visualization
                 };
 
                 var displayListHasMyImage = imageList.Any(ele => ele.ControllerName == controllerName);
@@ -380,10 +392,18 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
                 if (displayListHasMyImage)
                 {
                     var previousImageInfo = imageList.First(ele => ele.ControllerName == controllerName);
-                    var myIndexInImageList = imageList.IndexOf(previousImageInfo);
-                    imageList[myIndexInImageList] = newImageInfo;
+                    // Remove displayed image if should not display
+                    if(!ShouldImageBeDisplayed) imageList.Remove(previousImageInfo);
+                    // Else update the displayed image
+                    else
+                    {
+                        var myIndexInImageList = imageList.IndexOf(previousImageInfo);
+                        imageList[myIndexInImageList] = newImageInfo;
+                        
+                    }
+                    
                 }
-                else
+                else if(ShouldImageBeDisplayed)
                 {
                     imageList.Add(newImageInfo);
                 }
@@ -392,6 +412,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
                 ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow = new List<ImageInfoViewModel>(imageList.OrderBy(ele => ele.ControllerName));
             }
         }
+
 
 
         /// <summary>

@@ -33,7 +33,7 @@
 
         <!-- Serialization directory -->
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <TextBox Text="{Binding SerializationBaseDir, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Text="{Binding Source={x:Static applicationViewModel:ApplicationViewModel.Instance}, Path=SerializationBaseDir, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                      materialDesign:HintAssist.Hint="Serialization Directory" MinWidth="300" />
             <Button Command="{Binding OpenImageDirCommand}">
                 <materialDesign:PackIcon Kind="FolderImage"></materialDesign:PackIcon>
@@ -102,15 +102,27 @@
                         
                         <!-- Should-save-images toggle -->
                         <CheckBox Margin="10 0" 
-                                  IsHitTestVisible="{Binding IsChecked, ElementName=ConnectAllToggle}"
                                   Style="{StaticResource MaterialDesignCheckBox}"
                                   IsChecked="{Binding ShouldSaveImages}" Content="Save all images" />
                         
                         <!-- Should-save-luminance-images toggle -->
-                        <CheckBox Margin="10 0" 
+                        <CheckBox Margin="10 0"
                                   IsHitTestVisible="{Binding IsChecked, ElementName=ConnectAllToggle}"
                                   Style="{StaticResource MaterialDesignCheckBox}"
                                   IsChecked="{Binding ShouldSaveAllLuminanceData}" Content="Save all luminance" />
+                        
+                        <Separator/>
+                        <!-- Should image displayed? -->
+                        <ItemsControl ItemsSource="{Binding Source={x:Static applicationViewModel:ApplicationViewModel.Instance}, Path=AttachedControllers}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding ControllerName}" Margin="5"/>
+                                        <CheckBox IsChecked="{Binding ShouldImageBeDisplayed}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                         </StackPanel>
                 </Grid>
             </GroupBox>

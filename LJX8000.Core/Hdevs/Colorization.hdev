@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.2" halcon_version="18.11.0.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (Image, 'D:/share/3DImages/1115/Correlation/2次/2/1115-094557-1590.tif')</l>
+<l>threshold(Image, Region, 1, 999999)</l>
+<l>reduce_domain (Image, Region, ImageReduced)</l>
+<l>min_max_gray (Region, ImageReduced, 0, Min, Max, Range)</l>
+<l>scale_image(Image,ImageScaled, 0.01, 0)</l>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

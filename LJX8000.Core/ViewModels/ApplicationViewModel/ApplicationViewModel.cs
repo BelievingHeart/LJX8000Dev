@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using HalconDotNet;
+using LJX8000.Core.ViewModels.ControllerViewModel;
 using LJX8000.Core.ViewModels.ImageInfo;
 using MaterialDesignThemes.Wpf;
 
@@ -66,7 +67,10 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
         /// All the images that will be shown on screen
         /// </summary>
         public List<ImageInfoViewModel> AllImagesToShow { get; set; } = new List<ImageInfoViewModel>();
-     
+
+
+        public List<ControllerViewModel.ControllerViewModel> AttachedControllers => ControllerManager.AttachedControllers;
+
     }
 
 }

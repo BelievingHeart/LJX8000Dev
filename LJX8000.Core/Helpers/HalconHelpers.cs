@@ -30,7 +30,6 @@ namespace LJX8000.Core.Helpers
             double scaleFactor = 65535 / (max - min);
             var imageScale = imageSub.ScaleImage(scaleFactor, 0);
 
-            imageScale.WriteImage("tiff", 0, "test.tif");
             return imageScale;
         }
     }
