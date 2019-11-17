@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using LJX8000.Core.Helpers;
 using LJXNative;
 using LJXNative.Data;

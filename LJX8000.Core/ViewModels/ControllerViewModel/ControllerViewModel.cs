@@ -208,8 +208,6 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
                 var intensityImage = EnableLuminanceData ? 
                     ToHImage(SimpleArrayDataHighSpeed.luminanceData.ToArray(), SimpleArrayDataHighSpeed.DataWidth, RowsPerImage)
                     : null;
-                HTuple width, height;
-                intensityImage.GetImageSize(out width, out height);
                 OnImageReady(heightImage, intensityImage);
 
                 SimpleArrayDataHighSpeed.Clear();
@@ -381,7 +379,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             var imageList = ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow;
             var visualization = heightImage;
 
-            lock (ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow)
+            lock (ApplicationViewModel.ApplicationViewModel.Instance.LockerOfAllImagesToShow)
             {
                 var newImageInfo = new ImageInfoViewModel()
                 {
@@ -403,14 +401,13 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
                         imageList[myIndexInImageList] = newImageInfo;
                     }
                 }
-                else if (ShouldImageBeDisplayed)
-                {
-                    imageList.Add(newImageInfo);
-                }
 
-
+                if (!ShouldImageBeDisplayed || displayListHasMyImage) return;
+                
+                imageList.Add(newImageInfo);
                 ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow =
-                    new List<ImageInfoViewModel>(imageList.OrderBy(ele => ele.ControllerName));
+                    new ObservableCollection<ImageInfoViewModel>(imageList.OrderBy(ele => ele.ControllerName));
+
             }
         }
 

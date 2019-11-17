@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows.Data;
 using HalconDotNet;
 using LJX8000.Core.ViewModels.ControllerViewModel;
 using LJX8000.Core.ViewModels.ImageInfo;
@@ -29,6 +30,7 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
 
         public ApplicationViewModel()
         {
+            BindingOperations.EnableCollectionSynchronization(AllImagesToShow, LockerOfAllImagesToShow);
         }
         
         #region Properties
@@ -63,12 +65,12 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
         /// <summary>
         /// All the images that will be shown on screen
         /// </summary>
-        public List<ImageInfoViewModel> AllImagesToShow { get; set; } = new List<ImageInfoViewModel>();
+        public ObservableCollection<ImageInfoViewModel> AllImagesToShow { get; set; } = new ObservableCollection<ImageInfoViewModel>();
 
         /// <summary>
         /// Synchronization object for <see cref="AllImagesToShow"/>
         /// </summary>
-        public object LockerOfAllImagesToShow { get; set; } = new object();
+        public object LockerOfAllImagesToShow { get;} = new object();
 
 
         public List<ControllerViewModel.ControllerViewModel> AttachedControllers => ControllerManager.AttachedControllers;

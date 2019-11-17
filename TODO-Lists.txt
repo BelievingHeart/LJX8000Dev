@@ -1,0 +1,5 @@
+1. Image count indicator
+2. Colorization
+3. Fix flickering issue : tests await
+4. Auto-serialization
+5. Ip config module
