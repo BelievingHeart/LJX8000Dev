@@ -109,6 +109,7 @@
     <Compile Include="Converters\ValueConverterBase.cs" />
     <Compile Include="DataAccess\SidebarLogger.cs" />
     <Compile Include="DataAccess\SnackbarLogger.cs" />
+    <Compile Include="Validations\IntegerValidationRule.cs" />
     <Compile Include="Views\ContollerView\ControllerView.xaml.cs">
       <DependentUpon>ControllerView.xaml</DependentUpon>
     </Compile>

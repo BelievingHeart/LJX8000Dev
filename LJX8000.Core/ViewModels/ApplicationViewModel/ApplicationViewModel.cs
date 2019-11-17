@@ -18,7 +18,7 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
             LogRecords = new ObservableCollection<SideBarMessageItemViewModel.SideBarMessageItemViewModel>()
         };
 
-        private string _serializationBaseDir;
+        private string _serializationBaseDir = String.Empty;
 
         /// <summary>
         /// Application wide instance for xaml to bind to
@@ -47,10 +47,7 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
 
         public string SerializationBaseDir        
         {
-            get
-            {
-                return string.IsNullOrEmpty(_serializationBaseDir)?Directory.GetCurrentDirectory() + "/Images" : _serializationBaseDir.Replace("\\", "/") ;
-            }
+            get { return _serializationBaseDir; }
             set { _serializationBaseDir = value; }
         }
 

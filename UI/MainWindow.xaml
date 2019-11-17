@@ -8,6 +8,7 @@
         xmlns:viewModels="clr-namespace:LJX8000.Core.ViewModels;assembly=LJX8000.Core"
         xmlns:converters="clr-namespace:UI.Converters"
         xmlns:imageInfo="clr-namespace:UI.Views.ImageInfo"
+        xmlns:validations="clr-namespace:UI.Validations"
 
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -22,157 +23,225 @@
     <Window.DataContext>
         <viewModels:MainWindowViewModel />
     </Window.DataContext>
-    <Grid>
+    <materialDesign:DialogHost Style="{StaticResource MaterialDesignEmbeddedDialogHost}"
+                               IsOpen="{Binding IsCollectingImagesDone}">
+        <materialDesign:DialogHost.DialogContent>
+            <StackPanel>
+                <TextBox
+                    materialDesign:HintAssist.Hint="Next image directory"
+                    materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
+                    materialDesign:HintAssist.FloatingScale="0.50"
+                    Text="{Binding ImageDirectoryName, UpdateSourceTrigger=LostFocus}"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    FontSize="24" />
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <!-- Serialization directory -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <TextBox Text="{Binding Source={x:Static applicationViewModel:ApplicationViewModel.Instance}, Path=SerializationBaseDir, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
-                     materialDesign:HintAssist.Hint="Serialization Directory" MinWidth="300" />
-            <Button Command="{Binding OpenImageDirCommand}">
-                <materialDesign:PackIcon Kind="FolderImage"></materialDesign:PackIcon>
-            </Button>
-        </StackPanel>
-
-     
+                <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" IsDefault="True" />
+            </StackPanel>
+        </materialDesign:DialogHost.DialogContent>
 
 
-        <Grid Grid.Row="3">    <!-- Controller contents -->
+        <Grid>
+
             <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="250" />
-            </Grid.ColumnDefinitions>
+
+            <!-- Serialization directory -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <TextBox
+                    Text="{Binding Source={x:Static applicationViewModel:ApplicationViewModel.Instance}, Path=SerializationBaseDir, UpdateSourceTrigger=PropertyChanged}"
+                    materialDesign:HintAssist.Hint="Serialization Directory" MinWidth="300" />
+                <!-- Open serialization directory -->
+                <Button Command="{Binding OpenImageDirCommand}">
+                    <materialDesign:PackIcon Kind="FolderImage" />
+                </Button>
+                <Separator />
+                <!-- Connect-all toggle -->
+                <ToggleButton Margin="5 0" Name="ConnectAllToggle"
+                              Style="{StaticResource MaterialDesignActionToggleButton}"
+                              IsChecked="{Binding IsAllConnected}"
+                              ToolTip="Toggle connect-disconnect all controllers">
+                    <ToggleButton.Content>
+                        <materialDesign:PackIcon
+                            Kind="Play" />
+                    </ToggleButton.Content>
+                    <materialDesign:ToggleButtonAssist.OnContent>
+                        <materialDesign:PackIcon
+                            Kind="Stop" />
+                    </materialDesign:ToggleButtonAssist.OnContent>
+                </ToggleButton>
 
 
-            <!-- Image views -->
-            <ItemsControl Grid.Column="0" Grid.RowSpan="2"
-                          ItemsSource="{Binding AllImagesToShow, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <imageInfo:ImageInfoView Margin="5" MinWidth="100"
-                                                 Width="{Binding ElementName=ImageViewWidthSlider, Path=Value}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-
-            <!-- Global Settings -->
-            <GroupBox Grid.Column="1" Grid.Row="0" Header="Global Settings">
-                <Grid>
-            
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <Slider Grid.Column="0" Name="ImageViewWidthSlider" Maximum="800" Minimum="100" Orientation="Vertical"
-                            ToolTip="Adjust image size"/>
+            </StackPanel>
 
 
-                    <StackPanel Grid.Column="1">
-                        <!-- Connect-all toggle -->
-                        <ToggleButton Margin="5 0" Name="ConnectAllToggle"
-                                      Style="{StaticResource MaterialDesignActionToggleButton}"
-                                      IsChecked="{Binding IsAllConnected}"
-                                      ToolTip="Toggle connect-disconnect all controllers">
-                            <ToggleButton.Content>
-                                <materialDesign:PackIcon
-                                    Kind="Play" />
-                            </ToggleButton.Content>
-                            <materialDesign:ToggleButtonAssist.OnContent>
-                                <materialDesign:PackIcon
-                                    Kind="Stop" />
-                            </materialDesign:ToggleButtonAssist.OnContent>
-                        </ToggleButton>
-                        
-                        <!-- Should-save-images toggle -->
-                        <CheckBox Margin="10 0" 
-                                  Style="{StaticResource MaterialDesignCheckBox}"
-                                  IsChecked="{Binding ShouldSaveImages}" Content="Save all images" />
-                        
-                        <!-- Should-save-luminance-images toggle -->
-                        <CheckBox Margin="10 0"
-                                  IsHitTestVisible="{Binding IsChecked, ElementName=ConnectAllToggle}"
-                                  Style="{StaticResource MaterialDesignCheckBox}"
-                                  IsChecked="{Binding ShouldSaveAllLuminanceData}" Content="Save all luminance" />
-                        
-                        <Separator/>
-                        <!-- Should image displayed? -->
-                        <ItemsControl ItemsSource="{Binding Source={x:Static applicationViewModel:ApplicationViewModel.Instance}, Path=AttachedControllers}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding ControllerName}" Margin="5"/>
-                                        <CheckBox IsChecked="{Binding ShouldImageBeDisplayed}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        </StackPanel>
-                </Grid>
-            </GroupBox>
-            
-            <!-- Individual controller view -->
-            <GroupBox Grid.Column="1" Grid.Row="1" Header="Individual Controller Settings">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Controllers: " Margin="5" />
-                        <ComboBox ItemsSource="{Binding ControllerNames}"
-                                  SelectedValue="{Binding CurrentControllerName}" MinWidth="200" />
+            <Grid Grid.Row="3">    <!-- Controller contents -->
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="300" />
+                </Grid.ColumnDefinitions>
 
-                    </StackPanel>
-                    <ContentControl
-                        Content="{Binding CurrentControllerName, Converter={converters:StringToControllerPageConverter}}" />
-                </StackPanel>
-            </GroupBox>
 
-            <!-- Side bar logging system -->
-            <Expander Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2" Background="Transparent"
-                      ExpandDirection="Right"
-                      Panel.ZIndex="10"
-                      HorizontalAlignment="Left"
-                      IsExpanded="{Binding AutoResetFlag,
-                  Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">
-                <Expander.Header>
-                    <TextBlock
-                        Text="Logs"
-                        RenderTransformOrigin=".5,.5">
-                        <TextBlock.LayoutTransform>
-                            <RotateTransform
-                                Angle="90" />
-                        </TextBlock.LayoutTransform>
-                    </TextBlock>
-                </Expander.Header>
+                <!-- Image views -->
+                <ItemsControl Grid.Column="0" Grid.RowSpan="2"
+                              ItemsSource="{Binding AllImagesToShow, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
 
-                <ItemsControl
-                    ItemsSource="{Binding LogRecords, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <GroupBox Header="{Binding Time}">
-                                <WrapPanel>
-                                    <TextBlock Text="{Binding Message}" FontSize="24"
-                                               HorizontalAlignment="Left" />
-                                </WrapPanel>
-                            </GroupBox>
+                            <imageInfo:ImageInfoView Margin="5" MinWidth="100"
+                                                     Width="{Binding ElementName=ImageViewWidthSlider, Path=Value}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </Expander>
+
+                <!-- Global Settings -->
+                <GroupBox Grid.Column="1" Grid.Row="0" Header="Global Settings">
+                    <DockPanel>
+
+                  
+
+                        <Slider DockPanel.Dock="Left" Name="ImageViewWidthSlider" Maximum="800" Minimum="100"
+                                Orientation="Vertical"
+                                ToolTip="Adjust image size" />
+
+                        
+                            <!-- Should-save-images toggle -->
+                            <CheckBox DockPanel.Dock="Top" Margin="10 0"
+                                      Style="{StaticResource MaterialDesignCheckBox}"
+                                      IsChecked="{Binding ShouldSaveImages}" Content="Save all images" />
+
+                            <!-- Should-save-luminance-images toggle -->
+                            <CheckBox DockPanel.Dock="Top" Margin="10 0"
+                                      IsHitTestVisible="{Binding IsChecked, ElementName=ConnectAllToggle}"
+                                      Style="{StaticResource MaterialDesignCheckBox}"
+                                      IsChecked="{Binding ShouldSaveAllLuminanceData}" Content="Save all luminance" />
+
+
+                            <!-- Should image displayed? -->
+                            <materialDesign:Card Margin="10" DockPanel.Dock="Bottom">
+                                <StackPanel Background="{StaticResource SecondaryAccentBrush}">
+                                    <TextBlock Text="Select images to display"
+                                               Foreground="{StaticResource PrimaryHueDarkBrush}" />
+                                    <Separator />
+                                    <ItemsControl Margin="0 5"
+                                                  ItemsSource="{Binding Source={x:Static applicationViewModel:ApplicationViewModel.Instance}, Path=AttachedControllers}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding ControllerName}" Margin="5" />
+                                                    <CheckBox IsChecked="{Binding ShouldImageBeDisplayed}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </materialDesign:Card>
+
+                            <!-- Set max images to collect -->
+                            <materialDesign:DialogHost DockPanel.Dock="Top">
+                                <materialDesign:DialogHost.DialogContent>
+                                    <StackPanel Width="200">
+                                        <TextBox   Style="{StaticResource MaterialDesignFloatingHintTextBox}" FontSize="20"
+                                                   materialDesign:HintAssist.Hint="Maximum images to collect">
+                                            <TextBox.Text>
+                                                <Binding Path="MaxImageSetsToCollect" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <validations:IntegerValidationRule/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <Button Content="OK" IsDefault="True" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
+                                    </StackPanel>
+                                </materialDesign:DialogHost.DialogContent>
+                                
+                                <Grid Height="200">
+                                    <Viewbox>
+                                        <ProgressBar VerticalAlignment="Center"
+                                                     Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                                     Value="{Binding NumImageSetsCollected}"
+                                                     Maximum="{Binding MaxImageSetsToCollect}"
+                                                     IsIndeterminate="False" />
+                                    </Viewbox>
+                                    <Viewbox>
+                                        <Button Margin="10"
+                                                Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                                                Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                                                ToolTip="MaterialDesignFloatingActionMiniLightButton">
+                                            <materialDesign:PackIcon
+                                                Kind="Alarm"
+                                                Height="24"
+                                                Width="24" />
+                                        </Button>
+                                    </Viewbox>
+
+                                </Grid>
+                            </materialDesign:DialogHost>
+                            
+                            <TextBlock Text="{Binding MaxImageSetsToCollect}"/>
+                    </DockPanel>
+                </GroupBox>
+
+                <!-- Individual controller view -->
+                <GroupBox Grid.Column="1" Grid.Row="1" Header="Individual Controller Settings">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Controllers: " Margin="5" />
+                            <ComboBox ItemsSource="{Binding ControllerNames}"
+                                      SelectedValue="{Binding CurrentControllerName}" MinWidth="200" />
+
+                        </StackPanel>
+                        <ContentControl
+                            Content="{Binding CurrentControllerName, Converter={converters:StringToControllerPageConverter}}" />
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- Side bar logging system -->
+                <Expander Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2" Background="Transparent"
+                          ExpandDirection="Right"
+                          Panel.ZIndex="10"
+                          HorizontalAlignment="Left"
+                          IsExpanded="{Binding AutoResetFlag,
+                  Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">
+                    <Expander.Header>
+                        <TextBlock
+                            Text="Logs"
+                            RenderTransformOrigin=".5,.5">
+                            <TextBlock.LayoutTransform>
+                                <RotateTransform
+                                    Angle="90" />
+                            </TextBlock.LayoutTransform>
+                        </TextBlock>
+                    </Expander.Header>
+
+                    <ItemsControl
+                        ItemsSource="{Binding LogRecords, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <GroupBox Header="{Binding Time}">
+                                    <WrapPanel>
+                                        <TextBlock Text="{Binding Message}" FontSize="24"
+                                                   HorizontalAlignment="Left" />
+                                    </WrapPanel>
+                                </GroupBox>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander>
+            </Grid>
         </Grid>
-    </Grid>
+
+    </materialDesign:DialogHost>
 </Window>

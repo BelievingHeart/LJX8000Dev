@@ -3,3 +3,4 @@
 3. Fix flickering issue : tests await
 4. Auto-serialization
 5. Ip config module
+6. Validation on numbers
