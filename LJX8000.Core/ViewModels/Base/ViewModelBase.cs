@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using LJX8000.Core.Helpers;
 
-namespace LJX8000.Core.ViewModels
+namespace LJX8000.Core.ViewModels.Base
 {
     public class ViewModelBase : INotifyPropertyChanged
     {

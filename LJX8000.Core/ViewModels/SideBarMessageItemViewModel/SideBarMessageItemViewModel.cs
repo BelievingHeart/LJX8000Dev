@@ -1,4 +1,6 @@
-﻿namespace LJX8000.Core.ViewModels.SideBarMessageItemViewModel
+﻿using LJX8000.Core.ViewModels.Base;
+
+namespace LJX8000.Core.ViewModels.SideBarMessageItemViewModel
 {
     public class SideBarMessageItemViewModel : ViewModelBase
     {

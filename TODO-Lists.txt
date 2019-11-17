@@ -1,6 +1,6 @@
-1. Image count indicator
+1. Image count indicator yyyyyyyyyyyyy
 2. Colorization
 3. Fix flickering issue : tests await
 4. Auto-serialization
 5. Ip config module
-6. Validation on numbers
+6. Validation on numbers yyyyyyyy

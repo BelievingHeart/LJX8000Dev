@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using HalconDotNet;
 using LJX8000.Core.Commands;
+using LJX8000.Core.ViewModels.Base;
 using LJX8000.Core.ViewModels.ControllerViewModel;
 
 namespace LJX8000.Core.ViewModels

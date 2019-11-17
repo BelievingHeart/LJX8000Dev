@@ -1,4 +1,5 @@
 ﻿using HalconDotNet;
+using LJX8000.Core.ViewModels.Base;
 
 namespace LJX8000.Core.ViewModels.ImageInfo
 {

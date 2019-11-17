@@ -1,4 +1,6 @@
-﻿namespace LJX8000.Core.ViewModels.IpConfigViewModel
+﻿using LJX8000.Core.ViewModels.Base;
+
+namespace LJX8000.Core.ViewModels.IpConfigViewModel
 {
     public class IpConfigViewModel : ViewModelBase
     {

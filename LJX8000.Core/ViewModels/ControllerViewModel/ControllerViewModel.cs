@@ -15,6 +15,7 @@ using HalconDotNet;
 using LJX8000.Core.Commands;
 using LJX8000.Core.Enums;
 using LJX8000.Core.Helpers;
+using LJX8000.Core.ViewModels.Base;
 using LJX8000.Core.ViewModels.ImageInfo;
 using LJXNative;
 using LJXNative.Data;

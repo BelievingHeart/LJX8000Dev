@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Data;
 using HalconDotNet;
+using LJX8000.Core.ViewModels.Base;
 using LJX8000.Core.ViewModels.ControllerViewModel;
 using LJX8000.Core.ViewModels.ImageInfo;
 using MaterialDesignThemes.Wpf;
