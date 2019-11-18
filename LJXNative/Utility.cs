@@ -32,7 +32,7 @@
 		public enum TypeOfStructure
 		{
 			ProfileHeader,
-			ProfileFooter,
+			ProfileFooter
 		}
 		#endregion
 

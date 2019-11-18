@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Reflection.Emit;
 using System.Xml.Serialization;
-using LJX8000.Core.Attributes;
 using PropertyChanged;
 
 namespace LJX8000.Core.ViewModels.Base

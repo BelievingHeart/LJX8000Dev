@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using LJX8000.Core.Helpers;
 using LJX8000.Core.ViewModels.Controller;
 using UI.Views.ContollerView;
 
@@ -17,7 +16,7 @@ namespace UI.Converters
             var name = (string) value;
             if (name == null) return null;
             var viewModel = ControllerManager.AttachedControllers.First(c => c.Name == name);
-            return new ControllerView()
+            return new ControllerView
             {
                 DataContext = viewModel
             };

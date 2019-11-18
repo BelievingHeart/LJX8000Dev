@@ -10,7 +10,7 @@
              xmlns:viewModels="clr-namespace:LJX8000.Core.ViewModels;assembly=LJX8000.Core"
              xmlns:applicationViewModel="clr-namespace:LJX8000.Core.ViewModels.Application;assembly=LJX8000.Core"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="ControllerHostView_OnLoaded">
     <UserControl.DataContext>
         <viewModels:ControllerHostViewModel/>
     </UserControl.DataContext>
@@ -131,7 +131,7 @@
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding ControllerName}" Margin="5" />
+                                                    <TextBlock Text="{Binding Name}" Margin="5" />
                                                     <CheckBox IsChecked="{Binding ShouldImageBeDisplayed}" />
                                                 </StackPanel>
                                             </DataTemplate>
@@ -170,7 +170,7 @@
                                         <Button Margin="10"
                                                 Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
                                                 Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
-                                                ToolTip="MaterialDesignFloatingActionMiniLightButton">
+                                                ToolTip="Count images collected">
                                             <materialDesign:PackIcon
                                                 Kind="Alarm"
                                                 Height="24"
@@ -180,8 +180,6 @@
 
                                 </Grid>
                             </materialDesign:DialogHost>
-                            
-                            <TextBlock Text="{Binding MaxImageSetsToCollect}"/>
                     </DockPanel>
                 </GroupBox>
 

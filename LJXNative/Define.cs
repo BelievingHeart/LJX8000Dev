@@ -24,7 +24,7 @@ namespace LJXNative
 			LjxHeadSamplingPeriod2KHz,
 			LjxHeadSamplingPeriod4KHz,
 			LjxHeadSamplingPeriod8KHz,
-			LjxHeadSamplingPeriod16KHz,
+			LjxHeadSamplingPeriod16KHz
 		}
 
 		public enum LuminanceOutput

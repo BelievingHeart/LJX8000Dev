@@ -39,7 +39,7 @@ namespace LJX8000.Core.ViewModels.Controller
         private HighSpeedDataCallBackForSimpleArray _callbackSimpleArray;
 
         private int _rowsPerImage = 800;
-        private bool _isConnectedHighSpeed = false;
+        private bool _isConnectedHighSpeed;
 
         private string _name = string.Empty;
 
@@ -440,7 +440,7 @@ namespace LJX8000.Core.ViewModels.Controller
 
             lock (ApplicationViewModel.Instance.LockerOfAllImagesToShow)
             {
-                var newImageInfo = new ImageInfoViewModel()
+                var newImageInfo = new ImageInfoViewModel
                 {
                     ControllerName = controllerName,
                     Image = visualization

@@ -38,7 +38,7 @@ public class EventToCommandBehavior : Behavior<FrameworkElement>
 
     protected override void OnAttached()
     {
-        AttachHandler(this.Event); // initial set
+        AttachHandler(Event); // initial set
     }
 
     /// <summary>
@@ -48,21 +48,21 @@ public class EventToCommandBehavior : Behavior<FrameworkElement>
     {
         // detach old event
         if (_oldEvent != null)
-            _oldEvent.RemoveEventHandler(this.AssociatedObject, _handler);
+            _oldEvent.RemoveEventHandler(AssociatedObject, _handler);
 
         // attach new event
         if (!string.IsNullOrEmpty(eventName))
         {
-            EventInfo ei = this.AssociatedObject.GetType().GetEvent(eventName);
+            EventInfo ei = AssociatedObject.GetType().GetEvent(eventName);
             if (ei != null)
             {
-                MethodInfo mi = this.GetType().GetMethod("ExecuteCommand", BindingFlags.Instance | BindingFlags.NonPublic);
+                MethodInfo mi = GetType().GetMethod("ExecuteCommand", BindingFlags.Instance | BindingFlags.NonPublic);
                 _handler = Delegate.CreateDelegate(ei.EventHandlerType, this, mi);
-                ei.AddEventHandler(this.AssociatedObject, _handler);
+                ei.AddEventHandler(AssociatedObject, _handler);
                 _oldEvent = ei; // store to detach in case the Event property changes
             }
             else
-                throw new ArgumentException(string.Format("The event '{0}' was not found on type '{1}'", eventName, this.AssociatedObject.GetType().Name));
+                throw new ArgumentException(string.Format("The event '{0}' was not found on type '{1}'", eventName, AssociatedObject.GetType().Name));
         }
     }
 
@@ -71,11 +71,11 @@ public class EventToCommandBehavior : Behavior<FrameworkElement>
     /// </summary>
     private void ExecuteCommand(object sender, EventArgs e)
     {
-        object parameter = this.PassArguments ? e : null;
-        if (this.Command != null)
+        object parameter = PassArguments ? e : null;
+        if (Command != null)
         {
-            if (this.Command.CanExecute(parameter))
-                this.Command.Execute(parameter);
+            if (Command.CanExecute(parameter))
+                Command.Execute(parameter);
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
@@ -9,7 +7,6 @@ using LJX8000.Core.Enums;
 using LJX8000.Core.ViewModels.Application;
 using LJX8000.Core.ViewModels.Base;
 using LJX8000.Core.ViewModels.Controller;
-using LJX8000.Core.ViewModels.IpConfig;
 using MaterialDesignThemes.Wpf;
 
 namespace LJX8000.Core.ViewModels.ControllerConfiguration
@@ -28,6 +25,7 @@ namespace LJX8000.Core.ViewModels.ControllerConfiguration
         {
             if (ExistingControllers.Count == 0) return;
             RemoveNotRequiredControllerConfigs();
+            ControllerManager.AttachedControllers = ExistingControllers.ToList();
             ControllerManager.Init();
             // Navigate to program page
             ApplicationViewModel.Instance.CurrentAppPage = ApplicationPage.ControllerHostPage;
@@ -74,7 +72,7 @@ private void RemoveControllerConfig(ControllerViewModel controllerToRemove)
 
         private void AddController()
         {
-            var controllerToAdd = new ControllerViewModel()
+            var controllerToAdd = new ControllerViewModel
             {
                 Name = InputIpConfig, 
                 SerializationDirectory = ApplicationViewModel.ControllerSerializationBaseDir,

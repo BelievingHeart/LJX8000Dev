@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Windows;
-using LJX8000.Core.Attributes;
+﻿using System.Windows;
 using LJX8000.Core.Helpers;
 using LJX8000.Core.IoC;
 using LJX8000.Core.IoC.Interface;
 using LJX8000.Core.ViewModels.Application;
 using LJX8000.Core.ViewModels.Controller;
-using LJX8000.Core.ViewModels.IpConfig;
 using UI.DataAccess;
 
 namespace UI

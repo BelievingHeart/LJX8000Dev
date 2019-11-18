@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Controls;
 using LJX8000.Core.ViewModels.IpConfig;
 

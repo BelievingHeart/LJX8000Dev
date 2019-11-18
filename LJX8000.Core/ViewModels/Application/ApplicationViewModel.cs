@@ -7,14 +7,13 @@ using LJX8000.Core.Enums;
 using LJX8000.Core.ViewModels.Base;
 using LJX8000.Core.ViewModels.Controller;
 using LJX8000.Core.ViewModels.ImageInfo;
-using LJX8000.Core.ViewModels.IpConfig;
 using MaterialDesignThemes.Wpf;
 
 namespace LJX8000.Core.ViewModels.Application
 {
     public class ApplicationViewModel : ViewModelBase
     {
-        private static ApplicationViewModel _Instance = new ApplicationViewModel()
+        private static ApplicationViewModel _Instance = new ApplicationViewModel
         {
             MessageQueue = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(5000)),
             LogRecords = new ObservableCollection<SideBarMessageItemViewModel.SideBarMessageItemViewModel>()
@@ -70,7 +69,7 @@ namespace LJX8000.Core.ViewModels.Application
         public int MaxMessages { get; set; } = 300;
 
 
-        public static string SolutionDirectory => Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent?.Parent?.FullName;
+        public static string SolutionDirectory => Directory.GetParent(Directory.GetCurrentDirectory()).Parent?.Parent?.FullName;
 
         public static string ConfigDirectory => Path.Combine(SolutionDirectory, "Configs");
         
@@ -88,7 +87,7 @@ namespace LJX8000.Core.ViewModels.Application
         public object LockerOfAllImagesToShow { get;} = new object();
 
 
-        public List<Controller.ControllerViewModel> AttachedControllers => ControllerManager.AttachedControllers;
+        public List<ControllerViewModel> AttachedControllers => ControllerManager.AttachedControllers;
 
 
         #endregion

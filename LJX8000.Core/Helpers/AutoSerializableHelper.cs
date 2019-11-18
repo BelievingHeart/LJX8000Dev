@@ -42,7 +42,7 @@ namespace LJX8000.Core.Helpers
                 }
                 catch (FileNotFoundException e) // If not in disk, create a new one
                 {
-                    outputs.Add(new T()
+                    outputs.Add(new T
                     {
                         Name = name,
                         SerializationDirectory = serializationDir

@@ -15,7 +15,7 @@ namespace UI.Converters
         /// <summary>
         /// Static converter instance that is going to used for every EnumToPage conversion
         /// </summary>
-        private static T _converterInstance = null;
+        private static T _converterInstance;
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {

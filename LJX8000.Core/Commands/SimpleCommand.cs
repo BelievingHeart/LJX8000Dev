@@ -35,7 +35,7 @@ namespace LJX8000.Core.Commands
                 throw new ArgumentNullException("execute");
 
             _execute = execute;
-            _canExecute = ((obj) => true);
+            _canExecute = (obj => true);
         }
         public SimpleCommand(Action<object> execute, Predicate<object> canExecute)
         {

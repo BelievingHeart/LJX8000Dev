@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using LJX8000.Core.Enums;
-using MaterialDesignThemes.Wpf;
 
 namespace UI.Converters
 {

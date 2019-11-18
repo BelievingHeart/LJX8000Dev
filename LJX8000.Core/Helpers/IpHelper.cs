@@ -7,7 +7,7 @@ namespace LJX8000.Core.Helpers
     {
         public static IpConfigViewModel ToViewModel(this LJX8IF_ETHERNET_CONFIG config)
         {
-            return new IpConfigViewModel()
+            return new IpConfigViewModel
             {
                 FirstByte = config.abyIpAddress[0],
                 SecondByte = config.abyIpAddress[1],
@@ -25,7 +25,7 @@ namespace LJX8000.Core.Helpers
             bytes[2] = model.ThirdByte;
             bytes[3] = model.ForthByte;
             
-            return new LJX8IF_ETHERNET_CONFIG()
+            return new LJX8IF_ETHERNET_CONFIG
             {
                 abyIpAddress = bytes,
                 wPortNo = model.Port

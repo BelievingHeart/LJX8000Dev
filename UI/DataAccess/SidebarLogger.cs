@@ -12,7 +12,7 @@ namespace UI.DataAccess
         {
             Application.Current.Dispatcher?.Invoke(() =>
             {
-                ApplicationViewModel.Instance.Enqueue(new SideBarMessageItemViewModel()
+                ApplicationViewModel.Instance.Enqueue(new SideBarMessageItemViewModel
                 {
                     Message = message,
                     Time = DateTime.Now.ToString("h:mm:ss tt zz")

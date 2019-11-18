@@ -80,7 +80,7 @@
 			{
 				lock (_syncObject)
 				{
-					if ((uint)(value & (0x1 << BatchFinalizeFlagBitCount)) != 0)
+					if ((value & (0x1 << BatchFinalizeFlagBitCount)) != 0)
 					{
 						BatchNo++;
 					}
@@ -108,7 +108,7 @@
 					return Count >= Define.BufferFullCount;
 				}
 
-				uint copyCount = Math.Min((uint)Define.BufferFullCount - Count, count);
+				uint copyCount = Math.Min(Define.BufferFullCount - Count, count);
 				if (copyCount == 0) return Count >= Define.BufferFullCount;
 
 				Count += copyCount;
@@ -260,7 +260,7 @@
 			WriteTiffTag(stream, 0x0116, 3, 1, height);
 
 			// strip byte counts
-			WriteTiffTag(stream, 0x0117, 4, 1, width * height * (uint)2);
+			WriteTiffTag(stream, 0x0117, 4, 1, width * height * 2);
 
 			// X resolusion address
 			WriteTiffTag(stream, 0x011A, 5, 1, stripOffset - 16);
@@ -275,13 +275,13 @@
 			WriteTiffTag(stream, 0x0140, 3, 1, 0);
 
 			// Next IFD
-			stream.Write(BitConverter.GetBytes((int)0), 0, 4);
+			stream.Write(BitConverter.GetBytes(0), 0, 4);
 
 			// X resolusion and Y resolusion
-			stream.Write(BitConverter.GetBytes((int)96), 0, 4);
-			stream.Write(BitConverter.GetBytes((int)1), 0, 4);
-			stream.Write(BitConverter.GetBytes((int)96), 0, 4);
-			stream.Write(BitConverter.GetBytes((int)1), 0, 4);
+			stream.Write(BitConverter.GetBytes(96), 0, 4);
+			stream.Write(BitConverter.GetBytes(1), 0, 4);
+			stream.Write(BitConverter.GetBytes(96), 0, 4);
+			stream.Write(BitConverter.GetBytes(1), 0, 4);
 		}
 
 		private static void WriteTiffTag(Stream stream, ushort kind, ushort dataType, uint dataSize, uint data)

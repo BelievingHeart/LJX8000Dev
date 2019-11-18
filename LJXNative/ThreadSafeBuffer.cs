@@ -69,7 +69,7 @@
 				_count[index] += (uint)value.Count;
 				_notify[index] |= notify;
 				// Add the batch number if the batch has been finalized.
-				if ((uint)(notify & (0x1 << BatchFinalizeFlagBitCount)) != 0) _batchNo[index]++;
+				if ((notify & (0x1 << BatchFinalizeFlagBitCount)) != 0) _batchNo[index]++;
 			}
 		}
 
@@ -131,7 +131,7 @@
 				_count[index] += count;
 				_notify[index] |= notify;
 				// Add the batch number if the batch has been finalized.
-				if ((uint)(notify & (0x1 << BatchFinalizeFlagBitCount)) != 0) _batchNo[index]++;
+				if ((notify & (0x1 << BatchFinalizeFlagBitCount)) != 0) _batchNo[index]++;
 			}
 		}
 

@@ -4,6 +4,6 @@
     {
         NoConnection = 0,
         Ethernet,
-        EthernetFast,
-    };
+        EthernetFast
+    }
 }

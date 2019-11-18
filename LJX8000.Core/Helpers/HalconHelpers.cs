@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using HalconDotNet;
+﻿using HalconDotNet;
 
 namespace LJX8000.Core.Helpers
 {

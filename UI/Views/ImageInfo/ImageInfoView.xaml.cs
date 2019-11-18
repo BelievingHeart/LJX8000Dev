@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using HalconDotNet;
 using LJX8000.Core.ViewModels.ImageInfo;
 
 namespace UI.Views.ImageInfo

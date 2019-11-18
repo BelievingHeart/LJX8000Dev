@@ -42,7 +42,7 @@
 		/// <summary>Already performing high-speed communication error (for high-speed communication)</summary>
 		ErrHispeedRecvYet,
 		/// <summary>Insufficient buffer size</summary>
-		ErrBufferShort,
+		ErrBufferShort
 	}
 
 	/// Definition that indicates the "setting type" in LJX8IF_TARGET_SETTING structure.
@@ -68,8 +68,8 @@
 		Program12,
 		Program13,
 		Program14,
-		Program15,
-	};
+		Program15
+	}
 
 
 	/// Get batch profile position specification method designation
@@ -82,8 +82,8 @@
 		/// <summary>From current after commitment</summary>
 		LJX8IF_BATCH_POSITION_COMMITED = 0x03,
 		/// <summary>Current only</summary>
-		LJX8IF_BATCH_POSITION_CURRENT_ONLY = 0x04,
-	};
+		LJX8IF_BATCH_POSITION_CURRENT_ONLY = 0x04
+	}
 
 	/// Setting value storage level designation
 	public enum LJX8IF_SETTING_DEPTH : byte
@@ -93,8 +93,8 @@
 		/// <summary>Active measurement area</summary>
 		LJX8IF_SETTING_DEPTH_RUNNING = 0x01,
 		/// <summary>Save area</summary>
-		LJX8IF_SETTING_DEPTH_SAVE = 0x02,
-	};
+		LJX8IF_SETTING_DEPTH_SAVE = 0x02
+	}
 
 
 	/// Get profile target buffer designation
@@ -103,8 +103,8 @@
 		/// <summary>Active surface</summary>
 		LJX8IF_PROFILE_BANK_ACTIVE = 0x00,
 		/// <summary>Inactive surface</summary>	
-		LJX8IF_PROFILE_BANK_INACTIVE = 0x01,
-	};
+		LJX8IF_PROFILE_BANK_INACTIVE = 0x01
+	}
 
 	/// Get profile position specification method designation
 	public enum LJX8IF_PROFILE_POSITION : byte
@@ -114,8 +114,8 @@
 		/// <summary>From oldest</summary>
 		LJX8IF_PROFILE_POSITION_OLDEST = 0x01,
 		/// <summary>Specify position</summary>
-		LJX8IF_PROFILE_POSITION_SPEC = 0x02,
-	};
+		LJX8IF_PROFILE_POSITION_SPEC = 0x02
+	}
 
 	#endregion
 
@@ -130,7 +130,7 @@
 		public int nMinorNumber;
 		public int nRevisionNumber;
 		public int nBuildNumber;
-	};
+	}
 
 	/// <summary>
 	/// Ethernet settings structure
@@ -144,7 +144,7 @@
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
 		public byte[] reserve;
 
-	};
+	}
 
 	/// <summary>
 	/// Setting item designation structure
@@ -160,7 +160,7 @@
 		public byte byTarget2;
 		public byte byTarget3;
 		public byte byTarget4;
-	};
+	}
 
 	/// <summary>
 	/// Profile information structure
@@ -177,7 +177,7 @@
 		public byte[] reserve3;
 		public int lXStart;
 		public int lXPitch;
-	};
+	}
 
 	/// <summary>
 	/// Profile header information structure
@@ -190,7 +190,7 @@
 		public int lEncoderCount;
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
 		public uint[] reserve2;
-	};
+	}
 
 	/// <summary>
 	/// Profile footer information structure
@@ -199,7 +199,7 @@
 	public struct LJX8IF_PROFILE_FOOTER
 	{
 		public uint reserve;
-	};
+	}
 
 	/// <summary>
 	/// Get profile request structure (batch measurement: off)
@@ -216,7 +216,7 @@
 		public byte byErase;
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
 		public byte[] reserve2;
-	};
+	}
 
 	/// <summary>
 	/// Get profile request structure (batch measurement: on)
@@ -234,7 +234,7 @@
 		public byte byErase;
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
 		public byte[] reserve2;
-	};
+	}
 
 	/// <summary>
 	/// Get profile response structure (batch measurement: off)
@@ -248,7 +248,7 @@
 		public byte byGetProfileCount;
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
 		public byte[] reserve;
-	};
+	}
 
 	/// <summary>
 	/// Get profile response structure (batch measurement: on)
@@ -267,7 +267,7 @@
 		public byte byCurrentBatchCommited;
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
 		public byte[] reserve;
-	};
+	}
 
 	/// <summary>
 	/// High-speed communication start preparation request structure
@@ -278,7 +278,7 @@
 		public byte bySendPosition;		// Send start position
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
 		public byte[] reserve;		// Reservation 
-	};
+	}
 
 	#endregion
 
