@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:UI.Converters"
-             xmlns:applicationViewModel="clr-namespace:LJX8000.Core.ViewModels.ApplicationViewModel;assembly=LJX8000.Core"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:validations="clr-namespace:UI.Validations"
              xmlns:imageInfo="clr-namespace:UI.Views.ImageInfo"
              xmlns:viewModels="clr-namespace:LJX8000.Core.ViewModels;assembly=LJX8000.Core"
+             xmlns:applicationViewModel="clr-namespace:LJX8000.Core.ViewModels.Application;assembly=LJX8000.Core"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.DataContext>

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Mime;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 using System.Xml.Serialization;
@@ -13,13 +9,15 @@ using HalconDotNet;
 using LJX8000.Core.Commands;
 using LJX8000.Core.Enums;
 using LJX8000.Core.Helpers;
+using LJX8000.Core.ViewModels.Application;
 using LJX8000.Core.ViewModels.Base;
 using LJX8000.Core.ViewModels.ImageInfo;
+using LJX8000.Core.ViewModels.IpConfig;
 using LJXNative;
 using LJXNative.Data;
 using PropertyChanged;
 
-namespace LJX8000.Core.ViewModels.ControllerViewModel
+namespace LJX8000.Core.ViewModels.Controller
 {
     public sealed class ControllerViewModel : AutoSerializableBase<ControllerViewModel>
     {
@@ -43,19 +41,28 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         private int _rowsPerImage = 800;
         private bool _isConnectedHighSpeed = false;
 
+        private string _name = string.Empty;
+
         #endregion
 
         #region Property
 
-        public override string Name    
+        public override string Name
         {
-            get { return IpConfig.ToString(); }
-            set { IpConfig = value; }
+            get { return _name; }
+            set
+            {
+                _name = value;
+                IpConfig = _name;
+            }
         }
+        
+        [XmlIgnore]
+        public byte ForthByte => IpConfig.ForthByte;
         
         [DoNotNotify]
         [XmlIgnore]
-        private IpConfigViewModel.IpConfigViewModel IpConfig
+        private IpConfigViewModel IpConfig
         {
             get { return _ipConfig; }
             set
@@ -189,7 +196,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         [DoNotNotify]
         [XmlIgnore]
         public string SerializationDirectory =>
-            ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir;
+            ApplicationViewModel.Instance.SerializationBaseDir;
 
         [XmlIgnore]
         public bool IsBufferFull { get; set; }
@@ -197,7 +204,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// <summary>Simple array data for high speed communication</summary>
         private readonly ProfileSimpleArrayStore _simpleArrayDataHighSpeed;
 
-        private IpConfigViewModel.IpConfigViewModel _ipConfig;
+        private IpConfigViewModel _ipConfig;
 
         /// <summary>
         /// OK flag used by native library
@@ -431,10 +438,10 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         private void DisplayImageInvoke(HImage heightImage)
         {
             var controllerName = Name;
-            var imageList = ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow;
+            var imageList = ApplicationViewModel.Instance.AllImagesToShow;
             var visualization = heightImage;
 
-            lock (ApplicationViewModel.ApplicationViewModel.Instance.LockerOfAllImagesToShow)
+            lock (ApplicationViewModel.Instance.LockerOfAllImagesToShow)
             {
                 var newImageInfo = new ImageInfoViewModel()
                 {
@@ -460,7 +467,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
                 if (!ShouldImageBeDisplayed || displayListHasMyImage) return;
                 
                 imageList.Add(newImageInfo);
-                ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow =
+                ApplicationViewModel.Instance.AllImagesToShow =
                     new ObservableCollection<ImageInfoViewModel>(imageList.OrderBy(ele => ele.ControllerName));
 
             }

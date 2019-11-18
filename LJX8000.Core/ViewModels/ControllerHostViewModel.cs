@@ -8,8 +8,9 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using HalconDotNet;
 using LJX8000.Core.Commands;
+using LJX8000.Core.ViewModels.Application;
 using LJX8000.Core.ViewModels.Base;
-using LJX8000.Core.ViewModels.ControllerViewModel;
+using LJX8000.Core.ViewModels.Controller;
 
 namespace LJX8000.Core.ViewModels
 {
@@ -112,8 +113,8 @@ namespace LJX8000.Core.ViewModels
                 if(string.IsNullOrEmpty(value)) return;
                 // Reset image serialization directory
                 var parentDir =
-                    Directory.GetParent(ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir).FullName;
-                ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir =
+                    Directory.GetParent(ApplicationViewModel.Instance.SerializationBaseDir).FullName;
+                ApplicationViewModel.Instance.SerializationBaseDir =
                     Path.Combine(parentDir, value);
                 // Enable image serialization if image directory is updated
                 ShouldSaveImages = true;
@@ -128,7 +129,7 @@ namespace LJX8000.Core.ViewModels
 
         private void CountSavedImages()
         {
-            var imageDir = ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir;
+            var imageDir = ApplicationViewModel.Instance.SerializationBaseDir;
             if(!Directory.Exists(imageDir)) return;
 
             var subImageDirs = Directory.GetDirectories(imageDir);
@@ -155,7 +156,7 @@ namespace LJX8000.Core.ViewModels
 
         private void OpenImageDir()
         {
-            var dir = ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir;
+            var dir = ApplicationViewModel.Instance.SerializationBaseDir;
             Directory.CreateDirectory(dir);
 
             try

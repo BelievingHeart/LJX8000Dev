@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using LJX8000.Core.Helpers;
-using LJX8000.Core.ViewModels.ControllerViewModel;
+using LJX8000.Core.ViewModels.Controller;
 using UI.Views.ContollerView;
 
 namespace UI.Converters

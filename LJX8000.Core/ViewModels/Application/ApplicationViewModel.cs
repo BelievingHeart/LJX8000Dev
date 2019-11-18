@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Data;
-using System.Windows.Input;
-using HalconDotNet;
-using LJX8000.Core.Commands;
 using LJX8000.Core.Enums;
 using LJX8000.Core.ViewModels.Base;
-using LJX8000.Core.ViewModels.ControllerViewModel;
+using LJX8000.Core.ViewModels.Controller;
 using LJX8000.Core.ViewModels.ImageInfo;
+using LJX8000.Core.ViewModels.IpConfig;
 using MaterialDesignThemes.Wpf;
 
-namespace LJX8000.Core.ViewModels.ApplicationViewModel
+namespace LJX8000.Core.ViewModels.Application
 {
     public class ApplicationViewModel : ViewModelBase
     {
@@ -35,22 +33,20 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
         public ApplicationViewModel()
         {
             BindingOperations.EnableCollectionSynchronization(AllImagesToShow, LockerOfAllImagesToShow);
-            GoToControllerHostViewCommand = new RelayCommand(GoToControllerHostView);
         }
 
-        private void GoToControllerHostView()
-        
-        {
-            CurrentAppPage = ApplicationPage.ControllerHostPage;
-        }
+
 
 
         #region Properties
 
+        public List<ControllerViewModel> RememberedControllers => ControllerManager.AttachedControllers;
+
+
         /// <summary>
         /// Current showing page in main window
         /// </summary>
-        public ApplicationPage CurrentAppPage { get; private set; } = ApplicationPage.IpConfigurationPage;
+        public ApplicationPage CurrentAppPage { get; set; } = ApplicationPage.IpConfigurationPage;
 
         /// <summary>
         /// Message queue for ui logging
@@ -74,6 +70,11 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
         public int MaxMessages { get; set; } = 300;
 
 
+        public static string SolutionDirectory => Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent?.Parent?.FullName;
+
+        public static string ConfigDirectory => Path.Combine(SolutionDirectory, "Configs");
+        
+        public static string ControllerSerializationBaseDir => Path.Combine(ConfigDirectory, "Controllers");
 
 
         /// <summary>
@@ -87,7 +88,7 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
         public object LockerOfAllImagesToShow { get;} = new object();
 
 
-        public List<ControllerViewModel.ControllerViewModel> AttachedControllers => ControllerManager.AttachedControllers;
+        public List<Controller.ControllerViewModel> AttachedControllers => ControllerManager.AttachedControllers;
 
 
         #endregion
@@ -103,7 +104,6 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
         }
         
         
-        public ICommand GoToControllerHostViewCommand { get;  }
     }
 
 }

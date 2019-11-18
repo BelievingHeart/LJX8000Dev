@@ -107,10 +107,12 @@
     <Compile Include="Converters\EventToCommandBehaviour.cs" />
     <Compile Include="Converters\StatusToIconConverter.cs" />
     <Compile Include="Converters\StringToControllerPageConverter.cs" />
+    <Compile Include="Converters\StringToIpConfigViewModelConverter.cs" />
     <Compile Include="Converters\ValueConverterBase.cs" />
     <Compile Include="DataAccess\SidebarLogger.cs" />
     <Compile Include="DataAccess\SnackbarLogger.cs" />
     <Compile Include="Validations\IntegerValidationRule.cs" />
+    <Compile Include="Validations\IpConfigValidationRule.cs" />
     <Compile Include="Views\ContollerView\ControllerView.xaml.cs">
       <DependentUpon>ControllerView.xaml</DependentUpon>
     </Compile>

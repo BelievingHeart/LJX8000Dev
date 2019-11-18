@@ -26,7 +26,7 @@ namespace UI.Views.ImageInfo
 
         private void AdaptRatio(double currentWidth)
         {
-            var dataContext = DataContext as ImageInfoViewModel;
+            var dataContext = (ImageInfoViewModel)DataContext;
             var ratio = dataContext.ImageWidthRatio;
             
             Height = currentWidth * ratio;

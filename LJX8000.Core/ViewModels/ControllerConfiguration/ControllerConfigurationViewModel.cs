@@ -1,7 +1,15 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Windows.Input;
 using LJX8000.Core.Commands;
+using LJX8000.Core.Enums;
+using LJX8000.Core.ViewModels.Application;
 using LJX8000.Core.ViewModels.Base;
+using LJX8000.Core.ViewModels.Controller;
+using LJX8000.Core.ViewModels.IpConfig;
 using MaterialDesignThemes.Wpf;
 
 namespace LJX8000.Core.ViewModels.ControllerConfiguration
@@ -10,30 +18,83 @@ namespace LJX8000.Core.ViewModels.ControllerConfiguration
     {
         public ControllerConfigurationViewModel()
         {
-            AddIpConfigCommand = new RelayCommand(AddIpConfig);
-            DeleteIpConfigCommand = new ParameterizedCommand(DeleteIpConfig);
+            AddIpConfigCommand = new SimpleCommand(o=>AddController(), o=>!string.IsNullOrEmpty(InputIpConfig));
+            DeleteIpConfigCommand = new ParameterizedCommand(DeleteController);
+            GoToControllerHostViewCommand = new RelayCommand(GoToControllerHostView);
         }
 
-        private void DeleteIpConfig(object sender)
+        private void GoToControllerHostView()
+
+        {
+            if (ExistingControllers.Count == 0) return;
+            RemoveNotRequiredControllerConfigs();
+            ControllerManager.Init();
+            // Navigate to program page
+            ApplicationViewModel.Instance.CurrentAppPage = ApplicationPage.ControllerHostPage;
+        }
+
+        /// <summary>
+        /// Remove all the controller configs in disk that is not in <see cref="ExistingControllers"/>
+        /// </summary>
+        private void RemoveNotRequiredControllerConfigs()
+        {
+            var protectedFileNames = ExistingControllers.Select(controller => controller.Name + ".xml");
+            var filesInControllerConfigDir = Directory.GetFiles(ApplicationViewModel.ControllerSerializationBaseDir);
+            var pathsToRemove = filesInControllerConfigDir.Where(file => !protectedFileNames.Any(file.EndsWith));
+            foreach (var path in pathsToRemove)
+            {
+                File.Delete(path);
+            }
+        }
+
+        /// <summary>
+        /// Delete controller from <see cref="ExistingControllers"/>
+        /// </summary>
+        /// <param name="sender"></param>
+        private void DeleteController(object sender)
         {
             var chip = (Chip) sender;
-            ExistingIpConfigs.Remove(chip.DataContext as IpConfigViewModel.IpConfigViewModel);
+            var type = chip.DataContext.GetType().ToString();
+            var controllerToRemove = (ControllerViewModel)chip.DataContext;
+            ExistingControllers.Remove(controllerToRemove);
+            RemoveControllerConfig(controllerToRemove);
         }
 
-        private void AddIpConfig()
+/// <summary>
+/// Remove the controller config in disk
+/// </summary>
+/// <param name="controllerToRemove"></param>
+private void RemoveControllerConfig(ControllerViewModel controllerToRemove)
         {
-            ExistingIpConfigs.Add(InputIpConfig);
+            var pathToRemove = Path.Combine(ApplicationViewModel.ControllerSerializationBaseDir,
+                controllerToRemove.Name + ".xml");
+            
+            File.Delete(pathToRemove);
         }
 
-    #region Properties
-    public string InputIpConfig { get; set; }
+        private void AddController()
+        {
+            ExistingControllers.Add(new ControllerViewModel()
+            {
+                Name = InputIpConfig
+            });
+            InputIpConfig = string.Empty;
+        }
 
-    public ICommand DeleteIpConfigCommand { get; }
+        #region Properties
 
-    public ICommand AddIpConfigCommand { get; }
+        public string InputIpConfig { get; set; }
 
-    public ObservableCollection<IpConfigViewModel.IpConfigViewModel> ExistingIpConfigs { get; } = new ObservableCollection<IpConfigViewModel.IpConfigViewModel>();
+        public ICommand DeleteIpConfigCommand { get; }
 
-    #endregion
+        public ICommand AddIpConfigCommand { get; }
+
+        public ICommand GoToControllerHostViewCommand { get; }
+
+
+        public ObservableCollection<ControllerViewModel> ExistingControllers { get; } =
+            new ObservableCollection<ControllerViewModel>(ControllerManager.AttachedControllers);
+
+        #endregion
     }
 }

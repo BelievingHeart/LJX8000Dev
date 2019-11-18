@@ -8,37 +8,50 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:converters="clr-namespace:UI.Converters"
              xmlns:controllerConfiguration="clr-namespace:LJX8000.Core.ViewModels.ControllerConfiguration;assembly=LJX8000.Core"
+             xmlns:validations="clr-namespace:UI.Validations"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <GroupBox Header="IP configuration" Width="300">
+    <GroupBox Header="IP configuration" Width="500">
         <GroupBox.DataContext>
             <controllerConfiguration:ControllerConfigurationViewModel />
         </GroupBox.DataContext>
         <StackPanel>
             <!-- Ip config input -->
-            <StackPanel Orientation="Horizontal">
-                <TextBox Text="{Binding InputIpConfig, UpdateSourceTrigger=PropertyChanged}"
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" 
                          materialDesign:HintAssist.Hint="Ip config of next controller"
-                         materialDesign:HintAssist.IsFloating="True" />
-                <Button IsDefault="True" Content="Enter" Command="{Binding AddIpConfigCommand}" Margin="5 2" />
-            </StackPanel>
-            <Separator />
+                         materialDesign:HintAssist.IsFloating="True">
+                    <TextBox.Text>
+                        <Binding Path="InputIpConfig" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <validations:IpConfigValidationRule/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+                <Button Grid.Column="1" IsDefault="True" Content="Add" Command="{Binding AddIpConfigCommand}" Margin="5 2" />
+            </Grid>
+            <Separator/>
             <!-- Existing ip configs -->
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <ListView ItemsSource="{Binding ExistingIpConfigs}" Grid.Column="0">
+                <ListView ItemsSource="{Binding ExistingControllers}" Grid.Column="0">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <materialDesign:Chip Icon="{Binding ForthByte}" Content="{Binding}" IsDeletable="True"
+                            <materialDesign:Chip Icon="{Binding Path=ForthByte}" Content="{Binding Name}" IsDeletable="True"
                                                  Name="Chip">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="DeleteClick">
                                         <i:InvokeCommandAction
                                             Command="{Binding DataContext.DeleteIpConfigCommand, RelativeSource={RelativeSource AncestorType={x:Type GroupBox}}}"
-                                            CommandParameter="{Binding RelativeSource={RelativeSource Self}}" />
+                                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type materialDesign:Chip}}}" />
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </materialDesign:Chip>
@@ -47,16 +60,15 @@
                 </ListView>
                 
                 <!-- Start program -->
-                <Button Grid.Column="1"
-                        Style="{StaticResource MaterialDesignRaisedButton}"
-                        Height="50"
-                        materialDesign:ButtonAssist.CornerRadius="10" Command="{Binding Source={}}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Start "/>
-                        <materialDesign:PackIcon Kind="ArrowRightBoldHexagonOutline" />
-                    </StackPanel>
-
-                </Button>
+                <Viewbox Grid.Column="1" VerticalAlignment="Top" Margin="10" Height="50"> 
+                    <Button Style="{StaticResource MaterialDesignRaisedButton}"
+                            materialDesign:ButtonAssist.CornerRadius="10" Command="{Binding Source={}}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Start " />
+                            <materialDesign:PackIcon Kind="ArrowRightBoldHexagonOutline" />
+                        </StackPanel>
+                    </Button>
+                </Viewbox>
             </Grid>
         </StackPanel>
     </GroupBox>

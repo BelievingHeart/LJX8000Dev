@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
+using LJX8000.Core.Attributes;
+using LJX8000.Core.Helpers;
 using LJX8000.Core.IoC;
 using LJX8000.Core.IoC.Interface;
-using LJX8000.Core.ViewModels.ControllerViewModel;
-using LJX8000.Core.ViewModels.IpConfigViewModel;
+using LJX8000.Core.ViewModels.Application;
+using LJX8000.Core.ViewModels.Controller;
+using LJX8000.Core.ViewModels.IpConfig;
 using UI.DataAccess;
 
 namespace UI
@@ -21,14 +24,10 @@ namespace UI
         {
             base.OnStartup(e);
 
-            // Set up controller manager
-            ControllerManager.ControllerIps = new List<IpConfigViewModel>()
-            {
-                new IpConfigViewModel(){ForthByte = 1},
-                new IpConfigViewModel(){ForthByte = 2},
-                new IpConfigViewModel(){ForthByte = 3},
-            };
-            ControllerManager.Init();
+            var loadedControllers =
+                AutoSerializableHelper.LoadAllAutoSerializables<ControllerViewModel>(ApplicationViewModel
+                    .ControllerSerializationBaseDir);
+            ApplicationViewModel.Instance.RememberedControllers.AddRange(loadedControllers);
             
             // Set up IoC
             IoC.Kernel.Bind<IUILogger>().ToConstant(new SidebarLogger());

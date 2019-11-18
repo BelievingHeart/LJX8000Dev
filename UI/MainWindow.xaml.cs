@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using LJX8000.Core.ViewModels.ControllerViewModel;
+using LJX8000.Core.ViewModels.Controller;
 
 namespace UI
 {

@@ -30,7 +30,7 @@ namespace LJX8000.Core.ViewModels.Base
             PropertyChanged += Serialize;
         }
 
-        private void Serialize(object sender, PropertyChangedEventArgs e)
+        public void Serialize(object sender, PropertyChangedEventArgs e)
         {
             if (!ShouldAutoSerialize) return;
             if (string.IsNullOrEmpty(Name)) return;

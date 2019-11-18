@@ -1,6 +1,8 @@
-﻿using LJX8000.Core.ViewModels.Base;
+﻿using System;
+using System.Linq;
+using LJX8000.Core.ViewModels.Base;
 
-namespace LJX8000.Core.ViewModels.IpConfigViewModel
+namespace LJX8000.Core.ViewModels.IpConfig
 {
     public class IpConfigViewModel : ViewModelBase
     {
@@ -17,11 +19,16 @@ namespace LJX8000.Core.ViewModels.IpConfigViewModel
 
         public static implicit operator IpConfigViewModel(string s)
         {
-            var firstByte = byte.Parse(s.Substring(0, 1));
-            var secondByte = byte.Parse(s.Substring(2, 1));
-            var thirdByte = byte.Parse(s.Substring(4, 1));
-            var forthByte = byte.Parse(s.Substring(6, 1));
-            var portNum = ushort.Parse(s.Substring(8, 1));
+            if(s==null) throw new FormatException("Input string can not be null");
+            var numDots = s.Count(c => c == '.');
+            if(numDots!=3) throw new FormatException("Exactly 3 dots are required");
+            var textSegments = s.Split('.');
+            var forthByteAndPort = textSegments[3].Split('@');
+            var firstByte = byte.Parse(textSegments[0]);
+            var secondByte = byte.Parse(textSegments[1]);
+            var thirdByte = byte.Parse(textSegments[2]);
+            var forthByte = byte.Parse(forthByteAndPort[0]);
+            var portNum = ushort.Parse(forthByteAndPort[1]);
             return new IpConfigViewModel()
             {
                 FirstByte = firstByte,

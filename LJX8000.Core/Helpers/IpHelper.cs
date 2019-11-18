@@ -1,4 +1,4 @@
-﻿using LJX8000.Core.ViewModels.IpConfigViewModel;
+﻿using LJX8000.Core.ViewModels.IpConfig;
 using LJXNative;
 
 namespace LJX8000.Core.Helpers

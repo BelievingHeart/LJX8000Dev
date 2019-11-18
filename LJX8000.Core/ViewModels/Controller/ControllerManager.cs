@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using LJX8000.Core.Helpers;
+using LJX8000.Core.ViewModels.IpConfig;
 using LJXNative;
-using LJXNative.Data;
 
-namespace LJX8000.Core.ViewModels.ControllerViewModel
+namespace LJX8000.Core.ViewModels.Controller
 {
     /// <summary>
     /// Manage all controllers
@@ -21,9 +19,9 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// </summary>
         private static int _okFlag = (int) Rc.Ok;
         
-        public static List<IpConfigViewModel.IpConfigViewModel> ControllerIps { get; set; }
+        public static List<IpConfigViewModel> ControllerIps { get; set; }
 
-        public static List<ControllerViewModel> AttachedControllers { get; set; } = new List<ControllerViewModel>();
+        public static List<Controller.ControllerViewModel> AttachedControllers { get; set; } = new List<ControllerViewModel>();
 
         /// <summary>
         /// Initiate the controller manage system
@@ -42,7 +40,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             {
                 foreach (var t in ControllerIps)
                 {
-                    AttachedControllers.Add( new ControllerViewModel(){ Name = t.ToString()});
+                    AttachedControllers.Add( new Controller.ControllerViewModel(){ Name = t.ToString()});
                 }
 
                 return true;

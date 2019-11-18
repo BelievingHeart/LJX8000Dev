@@ -1,5 +1,5 @@
 ﻿using LJX8000.Core.IoC.Interface;
-using LJX8000.Core.ViewModels.ApplicationViewModel;
+using LJX8000.Core.ViewModels.Application;
 
 namespace UI.DataAccess
 {
