@@ -16,7 +16,7 @@ namespace UI.Converters
         {
             var name = (string) value;
             if (name == null) return null;
-            var viewModel = ControllerManager.AttachedControllers.First(c => c.IpConfig.ToString() == name);
+            var viewModel = ControllerManager.AttachedControllers.First(c => c.Name == name);
             return new ControllerView()
             {
                 DataContext = viewModel

@@ -23,7 +23,7 @@ namespace LJX8000.Core.ViewModels
         /// <summary>
         /// Controller names by ip address
         /// </summary>
-        public IEnumerable<string> ControllerNames => ControllerManager.AttachedControllers.Select(c => c.IpConfig.ToString());
+        public IEnumerable<string> ControllerNames => ControllerManager.AttachedControllers.Select(c => c.Name);
 
         /// <summary>
         /// Name of the selected controller

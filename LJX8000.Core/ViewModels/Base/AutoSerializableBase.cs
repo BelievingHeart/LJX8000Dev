@@ -17,7 +17,7 @@ namespace LJX8000.Core.ViewModels.Base
         /// </summary>
         [XmlAttribute]
         [DoNotNotify]
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         /// Whether the object should be auto-serialize when changed

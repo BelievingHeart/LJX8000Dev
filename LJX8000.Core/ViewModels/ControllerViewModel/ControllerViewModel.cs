@@ -11,6 +11,7 @@ using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Xml.Serialization;
 using HalconDotNet;
 using LJX8000.Core.Commands;
 using LJX8000.Core.Enums;
@@ -19,12 +20,13 @@ using LJX8000.Core.ViewModels.Base;
 using LJX8000.Core.ViewModels.ImageInfo;
 using LJXNative;
 using LJXNative.Data;
+using PropertyChanged;
 
 namespace LJX8000.Core.ViewModels.ControllerViewModel
 {
-    public sealed class ControllerViewModel : ViewModelBase
+    public sealed class ControllerViewModel : AutoSerializableBase<ControllerViewModel>
     {
-        public IpConfigViewModel.IpConfigViewModel IpConfig { get; set; }
+ 
 
         private void OnImageReady(HImage heightImage, HImage intensityImage)
         {
@@ -48,24 +50,61 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
 
         #region Property
 
-        public string ControllerName => IpConfig.ToString();
+        public override string Name    
+        {
+            get { return IpConfig.ToString(); }
+            set { IpConfig = value; }
+        }
+        
+        [DoNotNotify]
+        [XmlIgnore]
+        private IpConfigViewModel.IpConfigViewModel IpConfig
+        {
+            get { return _ipConfig; }
+            set
+            {
+                _ipConfig = value;
+                _deviceId = _ipConfig.ForthByte;
+            }
+        }
 
         /// <summary>
         /// Whether the received image should be displayed
         /// </summary>
         public bool ShouldImageBeDisplayed { get; set; } = true;
 
+        [DoNotNotify]
+        [XmlIgnore]
         public ICommand ConnectCommand { get; set; }
+
+        [DoNotNotify]
+        [XmlIgnore]
         public ICommand DisconnectCommand { get; set; }
+
+        [DoNotNotify]
+        [XmlIgnore]
         public ICommand InitHighSpeedCommand { get; set; }
+
+        [DoNotNotify]
+        [XmlIgnore]
         public ICommand PreStartHighSpeedCommand { get; set; }
+
+        [DoNotNotify]
+        [XmlIgnore]
         public ICommand StartHighSpeedCommand { get; set; }
+
+        [DoNotNotify]
+        [XmlIgnore]
         public ICommand StopHighSpeedCommand { get; set; }
+
+        [DoNotNotify]
+        [XmlIgnore]
         public ICommand FinalizeHighSpeedCommand { get; set; }
 
         /// <summary>
         /// If this controller is connected in high-speed mode
         /// </summary>
+       [XmlIgnore]
         public bool IsConnectedHighSpeed
         {
             get { return _isConnectedHighSpeed; }
@@ -87,18 +126,21 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// <summary>
         /// Whether to save image or not
         /// </summary>
+        [XmlIgnore]
         public bool ShouldSaveImage { get; set; } = true;
 
 
         /// <summary>
         /// Status property
         /// </summary>
+        [DoNotNotify]
+        [XmlIgnore]
         public DeviceStatus Status
         {
             get { return _status; }
             set
             {
-                SimpleArrayDataHighSpeed.Clear();
+                _simpleArrayDataHighSpeed.Clear();
                 CollectedRows = 0;
                 _status = value;
             }
@@ -108,6 +150,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// <summary>
         /// How many lines is needed to compose an image
         /// </summary>
+        [XmlIgnore]
         public int RowsPerImage
         {
             get { return _rowsPerImage; }
@@ -118,15 +161,18 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             }
         }
 
+        [XmlIgnore]
         public bool EnableLuminanceData
         {
-            get { return SimpleArrayDataHighSpeed.IsLuminanceEnable; }
-            set { SimpleArrayDataHighSpeed.IsLuminanceEnable = value; }
+            get { return _simpleArrayDataHighSpeed.IsLuminanceEnable; }
+            set { _simpleArrayDataHighSpeed.IsLuminanceEnable = value; }
         }
 
         /// <summary>
         /// How many rows within current image index has been collected
         /// </summary>
+        [XmlIgnore]
+
         private int CollectedRows { get; set; }
 
         /// <summary>
@@ -137,9 +183,24 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// <summary>
         /// The unique id managed by native library, defaults to the last byte of ip address
         /// </summary>
-        public int DeviceId { get; set; }
+        private int _deviceId;
 
+        [DoNotNotify]
+        [XmlIgnore]
         public ushort HighSpeedPort { get; set; } = 24692;
+
+        [DoNotNotify]
+        [XmlIgnore]
+        public string SerializationDirectory =>
+            ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir;
+
+        [XmlIgnore]
+        public bool IsBufferFull { get; set; }
+
+        /// <summary>Simple array data for high speed communication</summary>
+        private readonly ProfileSimpleArrayStore _simpleArrayDataHighSpeed;
+
+        private IpConfigViewModel.IpConfigViewModel _ipConfig;
 
         /// <summary>
         /// OK flag used by native library
@@ -156,7 +217,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         {
             var ip = IpConfig.ToNative();
             // Bind device id to this class or rather this ip
-            var success = NativeMethods.LJX8IF_EthernetOpen(DeviceId, ref ip) == _okFlag;
+            var success = NativeMethods.LJX8IF_EthernetOpen(_deviceId, ref ip) == _okFlag;
             if (!success) Log($"Open connection failed at {IpConfig}");
 
             Status = success ? DeviceStatus.Ethernet : DeviceStatus.NoConnection;
@@ -165,11 +226,11 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
 
         public void InitHighSpeedCommunicationSimpleArray()
         {
-            ThreadSafeBuffer.ClearBuffer(DeviceId); //Clear the retained profile data.
-            SimpleArrayDataHighSpeed.Clear();
+            ThreadSafeBuffer.ClearBuffer(_deviceId); //Clear the retained profile data.
+            _simpleArrayDataHighSpeed.Clear();
             var nativeIp = IpConfig.ToNative();
-            var success = NativeMethods.LJX8IF_InitializeHighSpeedDataCommunicationSimpleArray(DeviceId, ref nativeIp,
-                              HighSpeedPort, _callbackSimpleArray, ProfileCountEachFetch, (uint) DeviceId) == _okFlag;
+            var success = NativeMethods.LJX8IF_InitializeHighSpeedDataCommunicationSimpleArray(_deviceId, ref nativeIp,
+                              HighSpeedPort, _callbackSimpleArray, ProfileCountEachFetch, (uint) _deviceId) == _okFlag;
             if (success)
             {
                 Status = DeviceStatus.EthernetFast;
@@ -191,34 +252,33 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         private void CallBackSimpleArray(IntPtr headBuffer, IntPtr profileBuffer, IntPtr luminanceBuffer,
             uint isLuminanceEnable, uint profileSize, uint count, uint notify, uint user)
         {
-            IsBufferFull = SimpleArrayDataHighSpeed.AddReceivedData(profileBuffer, luminanceBuffer, count);
-            SimpleArrayDataHighSpeed.Notify = notify;
+            IsBufferFull = _simpleArrayDataHighSpeed.AddReceivedData(profileBuffer, luminanceBuffer, count);
+            _simpleArrayDataHighSpeed.Notify = notify;
             CollectedRows += (int) count;
             if (CollectedRows == RowsPerImage)
             {
                 CollectedRows = 0;
                 Directory.CreateDirectory(SerializationDirectory);
-                if (SimpleArrayDataHighSpeed.profileData.Count == 0)
+                if (_simpleArrayDataHighSpeed.profileData.Count == 0)
                 {
                     Log("Error: profileData.Count == 0 on image ready ");
                     return;
                 }
 
-                var heightImage = ToHImage(SimpleArrayDataHighSpeed.profileData.ToArray(),
-                    SimpleArrayDataHighSpeed.DataWidth, RowsPerImage);
+                var heightImage = ToHImage(_simpleArrayDataHighSpeed.profileData.ToArray(),
+                    _simpleArrayDataHighSpeed.DataWidth, RowsPerImage);
                 var intensityImage = EnableLuminanceData ? 
-                    ToHImage(SimpleArrayDataHighSpeed.luminanceData.ToArray(), SimpleArrayDataHighSpeed.DataWidth, RowsPerImage)
+                    ToHImage(_simpleArrayDataHighSpeed.luminanceData.ToArray(), _simpleArrayDataHighSpeed.DataWidth, RowsPerImage)
                     : null;
                 OnImageReady(heightImage, intensityImage);
 
-                SimpleArrayDataHighSpeed.Clear();
+                _simpleArrayDataHighSpeed.Clear();
             }
         }
 
 
 
-        public string SerializationDirectory =>
-            ApplicationViewModel.ApplicationViewModel.Instance.SerializationBaseDir;
+
 
         private string HeightImageDir => SerializationDirectory + $"/{IpConfig.ForthByte}/";
         private string IntensityImageDir => SerializationDirectory + $"/{IpConfig.ForthByte}-Intensity/";
@@ -232,7 +292,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             LJX8IF_PROFILE_INFO profileInfo = new LJX8IF_PROFILE_INFO();
 
             var success =
-                NativeMethods.LJX8IF_PreStartHighSpeedDataCommunication(DeviceId, ref request, ref profileInfo) ==
+                NativeMethods.LJX8IF_PreStartHighSpeedDataCommunication(_deviceId, ref request, ref profileInfo) ==
                 _okFlag;
             if (!success)
             {
@@ -240,18 +300,18 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
                 return;
             }
 
-            SimpleArrayDataHighSpeed.Clear();
-            SimpleArrayDataHighSpeed.DataWidth = profileInfo.nProfileDataCount;
+            _simpleArrayDataHighSpeed.Clear();
+            _simpleArrayDataHighSpeed.DataWidth = profileInfo.nProfileDataCount;
             // profileInfo.byLuminanceOutput == 1 => The controller was set to output luminance image
 //            ShouldSaveLuminanceData = profileInfo.byLuminanceOutput == 1;
         }
 
         public void StartHighSpeedCommunication()
         {
-            ThreadSafeBuffer.ClearBuffer(DeviceId);
+            ThreadSafeBuffer.ClearBuffer(_deviceId);
             IsBufferFull = false;
 
-            var success = NativeMethods.LJX8IF_StartHighSpeedDataCommunication(DeviceId) == _okFlag;
+            var success = NativeMethods.LJX8IF_StartHighSpeedDataCommunication(_deviceId) == _okFlag;
             if (!success)
             {
                 Log("Failed to start high speed communication");
@@ -261,7 +321,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
 
         public void StopHighSpeedCommunication()
         {
-            var success = NativeMethods.LJX8IF_StopHighSpeedDataCommunication(DeviceId) == _okFlag;
+            var success = NativeMethods.LJX8IF_StopHighSpeedDataCommunication(_deviceId) == _okFlag;
             if (!success)
             {
                 Log("Failed to stop high speed communication");
@@ -270,7 +330,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
 
         public void FinalizeHighSpeedCommunication()
         {
-            var success = NativeMethods.LJX8IF_FinalizeHighSpeedDataCommunication(DeviceId) == _okFlag;
+            var success = NativeMethods.LJX8IF_FinalizeHighSpeedDataCommunication(_deviceId) == _okFlag;
             if (!success)
             {
                 Log("Failed to finalize high speed communication");
@@ -281,7 +341,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
 
         public void Disconnect()
         {
-            var success = NativeMethods.LJX8IF_CommunicationClose(DeviceId) == _okFlag;
+            var success = NativeMethods.LJX8IF_CommunicationClose(_deviceId) == _okFlag;
 
             if (success) Status = DeviceStatus.NoConnection;
         }
@@ -336,9 +396,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         }
 
 
-        public bool IsBufferFull { get; set; }
 
-        public HWindow WindowHandle { get; set; }
 
 
         private static void Log(string msg)
@@ -347,8 +405,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         }
 
 
-        /// <summary>Simple array data for high speed communication</summary>
-        public ProfileSimpleArrayStore SimpleArrayDataHighSpeed { get; }
+      
 
         #endregion
 
@@ -359,7 +416,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
         /// </summary>
         public ControllerViewModel()
         {
-            SimpleArrayDataHighSpeed = new ProfileSimpleArrayStore();
+            _simpleArrayDataHighSpeed = new ProfileSimpleArrayStore();
             _callbackSimpleArray = CallBackSimpleArray;
 
             ConnectCommand = new RelayCommand(Connect);
@@ -376,7 +433,7 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
 
         private void DisplayImageInvoke(HImage heightImage)
         {
-            var controllerName = ControllerName;
+            var controllerName = Name;
             var imageList = ApplicationViewModel.ApplicationViewModel.Instance.AllImagesToShow;
             var visualization = heightImage;
 

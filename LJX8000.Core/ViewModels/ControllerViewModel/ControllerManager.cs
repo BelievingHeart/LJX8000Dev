@@ -40,11 +40,11 @@ namespace LJX8000.Core.ViewModels.ControllerViewModel
             var success = NativeMethods.LJX8IF_Initialize() == _okFlag;
             if (success)
             {
-                for (int i = 0; i < ControllerIps.Count; i++)
+                foreach (var t in ControllerIps)
                 {
-                    AttachedControllers.Add( new ControllerViewModel(){ IpConfig = ControllerIps[i], DeviceId = ControllerIps[i].ForthByte});
+                    AttachedControllers.Add( new ControllerViewModel(){ Name = t.ToString()});
                 }
-                
+
                 return true;
             }
             
