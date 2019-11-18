@@ -13,7 +13,7 @@ using LJX8000.Core.ViewModels.ControllerViewModel;
 
 namespace LJX8000.Core.ViewModels
 {
-    public class MainWindowViewModel : ViewModelBase
+    public class ControllerHostViewModel : ViewModelBase
     {
         private bool _isAllConnected;
         private bool _shouldSaveAllLuminanceData;
@@ -32,7 +32,7 @@ namespace LJX8000.Core.ViewModels
 
         public ICommand OpenImageDirCommand { get; set; }
 
-        public MainWindowViewModel()
+        public ControllerHostViewModel()
         {
             OpenImageDirCommand = new RelayCommand(OpenImageDir);
             _timer = new DispatcherTimer(TimeSpan.FromMilliseconds(500), DispatcherPriority.Normal, OnTimerTicked, Dispatcher.CurrentDispatcher);

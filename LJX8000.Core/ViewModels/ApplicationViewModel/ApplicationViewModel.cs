@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Data;
+using System.Windows.Input;
 using HalconDotNet;
+using LJX8000.Core.Commands;
+using LJX8000.Core.Enums;
 using LJX8000.Core.ViewModels.Base;
 using LJX8000.Core.ViewModels.ControllerViewModel;
 using LJX8000.Core.ViewModels.ImageInfo;
@@ -32,9 +35,22 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
         public ApplicationViewModel()
         {
             BindingOperations.EnableCollectionSynchronization(AllImagesToShow, LockerOfAllImagesToShow);
+            GoToControllerHostViewCommand = new RelayCommand(GoToControllerHostView);
         }
+
+        private void GoToControllerHostView()
         
+        {
+            CurrentAppPage = ApplicationPage.ControllerHostPage;
+        }
+
+
         #region Properties
+
+        /// <summary>
+        /// Current showing page in main window
+        /// </summary>
+        public ApplicationPage CurrentAppPage { get; private set; } = ApplicationPage.IpConfigurationPage;
 
         /// <summary>
         /// Message queue for ui logging
@@ -73,7 +89,6 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
 
         public List<ControllerViewModel.ControllerViewModel> AttachedControllers => ControllerManager.AttachedControllers;
 
-        
 
         #endregion
         /// <summary>
@@ -86,6 +101,9 @@ namespace LJX8000.Core.ViewModels.ApplicationViewModel
             if(LogRecords.Count > MaxMessages) LogRecords.RemoveAt(0);
             AutoResetFlag = true;
         }
+        
+        
+        public ICommand GoToControllerHostViewCommand { get;  }
     }
 
 }

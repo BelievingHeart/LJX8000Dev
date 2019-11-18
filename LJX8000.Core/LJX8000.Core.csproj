@@ -73,6 +73,7 @@
     <Compile Include="Commands\ParameterizedCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\SimpleCommand.cs" />
+    <Compile Include="Enums\ApplicationPage.cs" />
     <Compile Include="Enums\CameraTriggerModeType.cs" />
     <Compile Include="Enums\CameraTriggerSourceType.cs" />
     <Compile Include="Enums\CameraType.cs" />
@@ -87,11 +88,12 @@
     <Compile Include="ViewModels\ApplicationViewModel\ApplicationViewModel.cs" />
     <Compile Include="ViewModels\Base\AutoSerializableBase.cs" />
     <Compile Include="ViewModels\Base\ViewModelBase.cs" />
+    <Compile Include="ViewModels\ControllerConfiguration\ControllerConfigurationViewModel.cs" />
     <Compile Include="ViewModels\ControllerViewModel\ControllerManager.cs" />
     <Compile Include="ViewModels\ControllerViewModel\ControllerViewModel.cs" />
     <Compile Include="ViewModels\ImageInfo\ImageInfoViewModel.cs" />
     <Compile Include="ViewModels\IpConfigViewModel\IpConfigViewModel.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\ControllerHostViewModel.cs" />
     <Compile Include="ViewModels\SideBarMessageItemViewModel\SideBarMessageItemViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
