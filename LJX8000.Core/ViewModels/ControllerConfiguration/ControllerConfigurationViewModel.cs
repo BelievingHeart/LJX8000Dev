@@ -74,10 +74,15 @@ private void RemoveControllerConfig(ControllerViewModel controllerToRemove)
 
         private void AddController()
         {
-            ExistingControllers.Add(new ControllerViewModel()
+            var controllerToAdd = new ControllerViewModel()
             {
-                Name = InputIpConfig
-            });
+                Name = InputIpConfig, 
+                SerializationDirectory = ApplicationViewModel.ControllerSerializationBaseDir,
+                ShouldAutoSerialize = true
+            };
+            ExistingControllers.Add(controllerToAdd);
+            controllerToAdd.Serialize(null, null);
+            
             InputIpConfig = string.Empty;
         }
 

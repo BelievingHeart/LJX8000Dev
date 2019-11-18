@@ -47,6 +47,8 @@ namespace LJX8000.Core.ViewModels.Controller
 
         #region Property
 
+        [XmlAttribute]
+        [DoNotNotify]
         public override string Name
         {
             get { return _name; }
@@ -154,7 +156,6 @@ namespace LJX8000.Core.ViewModels.Controller
         /// <summary>
         /// How many lines is needed to compose an image
         /// </summary>
-        [XmlIgnore]
         public int RowsPerImage
         {
             get { return _rowsPerImage; }
@@ -192,11 +193,7 @@ namespace LJX8000.Core.ViewModels.Controller
         [DoNotNotify]
         [XmlIgnore]
         public ushort HighSpeedPort { get; set; } = 24692;
-
-        [DoNotNotify]
-        [XmlIgnore]
-        public string SerializationDirectory =>
-            ApplicationViewModel.Instance.SerializationBaseDir;
+        
 
         [XmlIgnore]
         public bool IsBufferFull { get; set; }

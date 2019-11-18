@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Xml.Serialization;
 using LJX8000.Core.Helpers;
 
 namespace LJX8000.Core.ViewModels.Base
@@ -52,6 +53,7 @@ namespace LJX8000.Core.ViewModels.Base
 
         #region AutoReset Logic
 
+        [XmlIgnore]
         public bool AutoResetFlag
         {
             get { return _autoResetFlag; }
@@ -68,6 +70,7 @@ namespace LJX8000.Core.ViewModels.Base
         }
         private bool _autoResetFlag;
 
+        [XmlIgnore]
         public int AutoResetInterval { get; set; } = 3000;
 
         private Timer _timer;
