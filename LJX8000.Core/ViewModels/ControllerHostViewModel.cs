@@ -136,10 +136,6 @@ namespace LJX8000.Core.ViewModels
             var numSubImageDirs = subImageDirs.Length;
             var imageCountInLastSubDir = Directory.GetFiles(subImageDirs[numSubImageDirs-1]).Length;
             NumImageSetsCollected = imageCountInLastSubDir;
-            
-            var count1 =  Directory.GetFiles(subImageDirs[0]).Length;
-            var count2 = Directory.GetFiles(subImageDirs[1]).Length;
-            
             var imageCountsAreEqual = subImageDirs.All(ele => Directory.GetFiles(ele).Length == imageCountInLastSubDir);
             
             if (MaxImageSetsToCollect <= 0) return;

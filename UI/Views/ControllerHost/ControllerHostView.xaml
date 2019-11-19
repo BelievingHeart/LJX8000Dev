@@ -26,7 +26,7 @@
                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                     FontSize="24" />
 
-                <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" IsDefault="True" />
+                <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" IsDefault="True" Content="OK"/>
             </StackPanel>
         </materialDesign:DialogHost.DialogContent>
 
@@ -172,7 +172,7 @@
                                                 Style="{StaticResource MaterialDesignFloatingActionButton}"
                                                 materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
                                                 materialDesign:ButtonProgressAssist.Value="{Binding NumImageSetsCollected}"
-                                                materialDesign:ButtonProgressAssist.Maximum="{Binding NumImageSetsCollected}"
+                                                materialDesign:ButtonProgressAssist.Maximum="{Binding MaxImageSetsToCollect}"
                                                 Content="{materialDesign:PackIcon Kind=Alarm, Size=24}" />
                                                 </Viewbox>
 
