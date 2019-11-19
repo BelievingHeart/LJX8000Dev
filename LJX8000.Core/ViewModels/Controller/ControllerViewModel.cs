@@ -265,14 +265,20 @@ namespace LJX8000.Core.ViewModels.Controller
                     return;
                 }
 
-                var heightImage = ToHImage(_simpleArrayDataHighSpeed.profileData.ToArray(),
-                    _simpleArrayDataHighSpeed.DataWidth, RowsPerImage);
-                var intensityImage = EnableLuminanceData ? 
-                    ToHImage(_simpleArrayDataHighSpeed.luminanceData.ToArray(), _simpleArrayDataHighSpeed.DataWidth, RowsPerImage)
-                    : null;
-                OnImageReady(heightImage, intensityImage);
+              
+                    var heightImage = ToHImage(_simpleArrayDataHighSpeed.profileData.ToArray(),
+                        _simpleArrayDataHighSpeed.DataWidth, RowsPerImage);
+                    var intensityImage = EnableLuminanceData
+                        ? ToHImage(_simpleArrayDataHighSpeed.luminanceData.ToArray(),
+                            _simpleArrayDataHighSpeed.DataWidth, RowsPerImage)
+                        : null;
+                    OnImageReady(heightImage, intensityImage);
+            
+            
+                    _simpleArrayDataHighSpeed.Clear();
 
-                _simpleArrayDataHighSpeed.Clear();
+                
+
             }
         }
 
@@ -280,8 +286,8 @@ namespace LJX8000.Core.ViewModels.Controller
 
 
 
-        private string HeightImageDir => SerializationDirectory + $"/{IpConfig.ForthByte}/";
-        private string IntensityImageDir => SerializationDirectory + $"/{IpConfig.ForthByte}-Intensity/";
+        private string HeightImageDir => ApplicationViewModel.Instance.SerializationBaseDir + $"/{IpConfig.ForthByte}/";
+        private string IntensityImageDir => ApplicationViewModel.Instance.SerializationBaseDir + $"/{IpConfig.ForthByte}-Intensity/";
 
 
         public void PreStartHighSpeedCommunication()
@@ -353,15 +359,30 @@ namespace LJX8000.Core.ViewModels.Controller
 
             if (heightImage != null)
             {
-                Directory.CreateDirectory(HeightImageDir);
-                heightImage.WriteImage("tiff", 0, Path.Combine(HeightImageDir, imageName));
+                if (IsValidImageDir(HeightImageDir))
+                {
+                    Directory.CreateDirectory(HeightImageDir);
+                    heightImage.WriteImage("tiff", 0, Path.Combine(HeightImageDir, imageName));
+                }
+            }
+            else
+            {
+                Log(IpConfig + ">Height image to be serialize is null");
             }
 
             if (intensityImage != null)
             {
-                Directory.CreateDirectory(IntensityImageDir);
-                intensityImage.WriteImage("tiff", 0, Path.Combine(IntensityImageDir, imageName));
+                if (IsValidImageDir(IntensityImageDir))
+                {
+                    Directory.CreateDirectory(IntensityImageDir);
+                    intensityImage.WriteImage("tiff", 0, Path.Combine(IntensityImageDir, imageName));
+                }
             }
+        }
+
+        private bool IsValidImageDir(string imageDir)
+        {
+            return imageDir.Contains(":");
         }
 
 
@@ -376,10 +397,19 @@ namespace LJX8000.Core.ViewModels.Controller
         {
             GCHandle pinnedArray = GCHandle.Alloc(data, GCHandleType.Pinned);
             IntPtr pointer = pinnedArray.AddrOfPinnedObject();
-
-
-            HImage image = new HImage("uint2", width, height, pointer);
-            pinnedArray.Free();
+            HImage image = null;
+            try
+            {
+                image = new HImage("uint2", width, height, pointer);
+            }
+            catch (AccessViolationException e)
+            {
+                Log("AccessViolationException occur when converting to Himage");
+            }
+            finally
+            {
+                pinnedArray.Free();
+            }
             return image;
         }
 
@@ -433,38 +463,46 @@ namespace LJX8000.Core.ViewModels.Controller
 
         private void DisplayImageInvoke(HImage heightImage)
         {
+            if(heightImage == null)
+            {
+                Log( IpConfig + ">Image to display is null");
+                return;
+            }
             var controllerName = Name;
             var imageList = ApplicationViewModel.Instance.AllImagesToShow;
             var visualization = heightImage;
 
             lock (ApplicationViewModel.Instance.LockerOfAllImagesToShow)
             {
-                var newImageInfo = new ImageInfoViewModel
+                System.Windows.Application.Current.Dispatcher?.Invoke(() =>
                 {
-                    ControllerName = controllerName,
-                    Image = visualization
-                };
-
-                var displayListHasMyImage = imageList.Any(ele => ele.ControllerName == controllerName);
-
-                if (displayListHasMyImage)
-                {
-                    var previousImageInfo = imageList.First(ele => ele.ControllerName == controllerName);
-                    // Remove displayed image if should not display
-                    if (!ShouldImageBeDisplayed) imageList.Remove(previousImageInfo);
-                    // Else update the displayed image
-                    else
+                    var newImageInfo = new ImageInfoViewModel
                     {
-                        var myIndexInImageList = imageList.IndexOf(previousImageInfo);
-                        imageList[myIndexInImageList] = newImageInfo;
-                    }
-                }
+                        ControllerName = controllerName,
+                        Image = visualization
+                    };
 
-                if (!ShouldImageBeDisplayed || displayListHasMyImage) return;
-                
-                imageList.Add(newImageInfo);
-                ApplicationViewModel.Instance.AllImagesToShow =
-                    new ObservableCollection<ImageInfoViewModel>(imageList.OrderBy(ele => ele.ControllerName));
+                    var displayListHasMyImage = imageList.Any(ele => ele.ControllerName == controllerName);
+
+                    if (displayListHasMyImage)
+                    {
+                        var previousImageInfo = imageList.First(ele => ele.ControllerName == controllerName);
+                        // Remove displayed image if should not display
+                        if (!ShouldImageBeDisplayed) imageList.Remove(previousImageInfo);
+                        // Else update the displayed image
+                        else
+                        {
+                            var myIndexInImageList = imageList.IndexOf(previousImageInfo);
+                            imageList[myIndexInImageList] = newImageInfo;
+                        }
+                    }
+
+                    if (!ShouldImageBeDisplayed || displayListHasMyImage) return;
+
+                    imageList.Add(newImageInfo);
+                    ApplicationViewModel.Instance.AllImagesToShow =
+                        new ObservableCollection<ImageInfoViewModel>(imageList.OrderBy(ele => ele.ControllerName));
+                });
 
             }
         }

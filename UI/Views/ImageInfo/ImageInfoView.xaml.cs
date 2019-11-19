@@ -13,7 +13,7 @@ namespace UI.Views.ImageInfo
 
         private void ImageInfoView_OnLoaded(object sender, RoutedEventArgs e)
         {
-            SmartWindowControlWpf.HalconWindow.SetLut("twelve");
+//            SmartWindowControlWpf.HalconWindow.SetLut("twelve");
             AdaptRatio(ActualWidth);
             
             SizeChanged += (ss, ee) =>

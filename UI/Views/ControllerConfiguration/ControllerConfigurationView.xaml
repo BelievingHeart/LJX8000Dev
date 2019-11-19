@@ -8,6 +8,7 @@
              xmlns:controllerConfiguration="clr-namespace:LJX8000.Core.ViewModels.ControllerConfiguration;assembly=LJX8000.Core"
              xmlns:validations="clr-namespace:UI.Validations"
              mc:Ignorable="d"
+             Loaded="ControllerConfigurationView_OnLoaded"
              >
     <UserControl.DataContext>
         <controllerConfiguration:ControllerConfigurationViewModel />

@@ -16,6 +16,8 @@ namespace UI.Views.ControllerHost
             mainWindow.WindowState = WindowState.Maximized;
             mainWindow.WindowStyle = WindowStyle.SingleBorderWindow;
             mainWindow.ResizeMode = ResizeMode.CanResize;
+            mainWindow.MinHeight = 800;
+            mainWindow.MinWidth = 1000;
         }
     }
 }

@@ -1,2 +1,2 @@
-1. Doesn't save intensity images
+1. First grab will lose some image to display
 2. Starting with non-default image size will crash

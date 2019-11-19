@@ -35,7 +35,7 @@ namespace LJX8000.Core.ViewModels
         {
             OpenImageDirCommand = new RelayCommand(OpenImageDir);
             _timer = new DispatcherTimer(TimeSpan.FromMilliseconds(500), DispatcherPriority.Normal, OnTimerTicked, Dispatcher.CurrentDispatcher);
-
+            _timer.Start();
         }
 
    
@@ -137,7 +137,10 @@ namespace LJX8000.Core.ViewModels
             var imageCountInLastSubDir = Directory.GetFiles(subImageDirs[numSubImageDirs-1]).Length;
             NumImageSetsCollected = imageCountInLastSubDir;
             
-            var imageCountsAreEqual = subImageDirs.All(ele => ele.Length == imageCountInLastSubDir);
+            var count1 =  Directory.GetFiles(subImageDirs[0]).Length;
+            var count2 = Directory.GetFiles(subImageDirs[1]).Length;
+            
+            var imageCountsAreEqual = subImageDirs.All(ele => Directory.GetFiles(ele).Length == imageCountInLastSubDir);
             
             if (MaxImageSetsToCollect <= 0) return;
             if(imageCountsAreEqual && NumImageSetsCollected == MaxImageSetsToCollect)
@@ -154,7 +157,9 @@ namespace LJX8000.Core.ViewModels
 
         private void OpenImageDir()
         {
+          
             var dir = ApplicationViewModel.Instance.SerializationBaseDir;
+            if (string.IsNullOrEmpty(dir)) return;
             Directory.CreateDirectory(dir);
 
             try
@@ -165,9 +170,6 @@ namespace LJX8000.Core.ViewModels
             {
                 IoC.IoC.Log($"Directory:{dir} is not valid");
             }
-
-
-            IsCollectingImagesDone = true;
         }
         
         private void DisconnectAllHighSpeed()

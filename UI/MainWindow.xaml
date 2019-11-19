@@ -14,10 +14,10 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="LJX8000 Grabber" Height="500" Width="400"
+        Title="LJX8000 Grabber" 
         FocusManager.FocusedElement="{Binding ElementName=Frame}"
-        WindowStyle="None" WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Width="400" Height="500"
         >
         <ContentControl Content="{Binding Path=CurrentAppPage, Source={x:Static applicationViewModel:ApplicationViewModel.Instance}, Converter={converters:EnumToApplicationPageConverter}}"></ContentControl>
 </Window>
