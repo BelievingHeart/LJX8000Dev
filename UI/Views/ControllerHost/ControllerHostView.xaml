@@ -158,25 +158,17 @@
                                     </StackPanel>
                                 </materialDesign:DialogHost.DialogContent>
                                 
-                                <Grid Height="200">
+                                <Grid Height="100">
+
                                     <Viewbox>
-                                        <ProgressBar VerticalAlignment="Center"
-                                                     Style="{StaticResource MaterialDesignCircularProgressBar}"
-                                                     Value="{Binding NumImageSetsCollected}"
-                                                     Maximum="{Binding MaxImageSetsToCollect}"
-                                                     IsIndeterminate="False" />
-                                    </Viewbox>
-                                    <Viewbox>
-                                        <Button Margin="10"
-                                                Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
-                                                Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
-                                                ToolTip="Count images collected">
-                                            <materialDesign:PackIcon
-                                                Kind="Alarm"
-                                                Height="24"
-                                                Width="24" />
-                                        </Button>
-                                    </Viewbox>
+                                        <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                                                ToolTip="Count images collected"
+                                                Style="{StaticResource MaterialDesignFloatingActionButton}"
+                                                materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
+                                                materialDesign:ButtonProgressAssist.Value="{Binding NumImageSetsCollected}"
+                                                materialDesign:ButtonProgressAssist.Maximum="{Binding NumImageSetsCollected}"
+                                                Content="{materialDesign:PackIcon Kind=Alarm, Size=24}" />
+                                                </Viewbox>
 
                                 </Grid>
                             </materialDesign:DialogHost>

@@ -49,12 +49,13 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <ListView ItemsSource="{Binding ExistingControllers}" Grid.Column="0">
+                        <ListView ItemsSource="{Binding ExistingControllers}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <materialDesign:Chip Icon="{Binding Path=ForthByte}" Content="{Binding Name}"
                                                          IsDeletable="True"
                                                          Name="Chip">
+                                        
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="DeleteClick">
                                                 <i:InvokeCommandAction

@@ -62,9 +62,8 @@ namespace LJX8000.Core.ViewModels.Controller
         [XmlIgnore]
         public byte ForthByte => IpConfig.ForthByte;
         
-        [DoNotNotify]
         [XmlIgnore]
-        private IpConfigViewModel IpConfig
+        public IpConfigViewModel IpConfig
         {
             get { return _ipConfig; }
             set
