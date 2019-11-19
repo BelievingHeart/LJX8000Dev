@@ -21,8 +21,6 @@ namespace LJX8000.Core.ViewModels.Controller
 {
     public sealed class ControllerViewModel : AutoSerializableBase<ControllerViewModel>
     {
- 
-
         private void OnImageReady(HImage heightImage, HImage intensityImage)
         {
             ImageReady?.Invoke(heightImage, intensityImage);
@@ -58,10 +56,9 @@ namespace LJX8000.Core.ViewModels.Controller
                 IpConfig = _name;
             }
         }
-        
-        [XmlIgnore]
-        public byte ForthByte => IpConfig.ForthByte;
-        
+
+        [XmlIgnore] public byte ForthByte => IpConfig.ForthByte;
+
         [XmlIgnore]
         public IpConfigViewModel IpConfig
         {
@@ -78,38 +75,24 @@ namespace LJX8000.Core.ViewModels.Controller
         /// </summary>
         public bool ShouldImageBeDisplayed { get; set; } = true;
 
-        [DoNotNotify]
-        [XmlIgnore]
-        public ICommand ConnectCommand { get; set; }
+        [DoNotNotify] [XmlIgnore] public ICommand ConnectCommand { get; set; }
 
-        [DoNotNotify]
-        [XmlIgnore]
-        public ICommand DisconnectCommand { get; set; }
+        [DoNotNotify] [XmlIgnore] public ICommand DisconnectCommand { get; set; }
 
-        [DoNotNotify]
-        [XmlIgnore]
-        public ICommand InitHighSpeedCommand { get; set; }
+        [DoNotNotify] [XmlIgnore] public ICommand InitHighSpeedCommand { get; set; }
 
-        [DoNotNotify]
-        [XmlIgnore]
-        public ICommand PreStartHighSpeedCommand { get; set; }
+        [DoNotNotify] [XmlIgnore] public ICommand PreStartHighSpeedCommand { get; set; }
 
-        [DoNotNotify]
-        [XmlIgnore]
-        public ICommand StartHighSpeedCommand { get; set; }
+        [DoNotNotify] [XmlIgnore] public ICommand StartHighSpeedCommand { get; set; }
 
-        [DoNotNotify]
-        [XmlIgnore]
-        public ICommand StopHighSpeedCommand { get; set; }
+        [DoNotNotify] [XmlIgnore] public ICommand StopHighSpeedCommand { get; set; }
 
-        [DoNotNotify]
-        [XmlIgnore]
-        public ICommand FinalizeHighSpeedCommand { get; set; }
+        [DoNotNotify] [XmlIgnore] public ICommand FinalizeHighSpeedCommand { get; set; }
 
         /// <summary>
         /// If this controller is connected in high-speed mode
         /// </summary>
-       [XmlIgnore]
+        [XmlIgnore]
         public bool IsConnectedHighSpeed
         {
             get { return _isConnectedHighSpeed; }
@@ -176,7 +159,6 @@ namespace LJX8000.Core.ViewModels.Controller
         /// How many rows within current image index has been collected
         /// </summary>
         [XmlIgnore]
-
         private int CollectedRows { get; set; }
 
         /// <summary>
@@ -189,13 +171,10 @@ namespace LJX8000.Core.ViewModels.Controller
         /// </summary>
         private int _deviceId;
 
-        [DoNotNotify]
-        [XmlIgnore]
-        public ushort HighSpeedPort { get; set; } = 24692;
-        
+        [DoNotNotify] [XmlIgnore] public ushort HighSpeedPort { get; set; } = 24692;
 
-        [XmlIgnore]
-        public bool IsBufferFull { get; set; }
+
+        [XmlIgnore] public bool IsBufferFull { get; set; }
 
         /// <summary>Simple array data for high speed communication</summary>
         private readonly ProfileSimpleArrayStore _simpleArrayDataHighSpeed;
@@ -265,29 +244,25 @@ namespace LJX8000.Core.ViewModels.Controller
                     return;
                 }
 
-              
-                    var heightImage = ToHImage(_simpleArrayDataHighSpeed.profileData.ToArray(),
-                        _simpleArrayDataHighSpeed.DataWidth, RowsPerImage);
-                    var intensityImage = EnableLuminanceData
-                        ? ToHImage(_simpleArrayDataHighSpeed.luminanceData.ToArray(),
-                            _simpleArrayDataHighSpeed.DataWidth, RowsPerImage)
-                        : null;
-                    OnImageReady(heightImage, intensityImage);
-            
-            
-                    _simpleArrayDataHighSpeed.Clear();
 
-                
+                var heightImage = ToHImageManaged(_simpleArrayDataHighSpeed.profileData.ToArray(),
+                    _simpleArrayDataHighSpeed.DataWidth, RowsPerImage);
+                var intensityImage = EnableLuminanceData
+                    ? ToHImageManaged(_simpleArrayDataHighSpeed.luminanceData.ToArray(),
+                        _simpleArrayDataHighSpeed.DataWidth, RowsPerImage)
+                    : null;
+                OnImageReady(heightImage, intensityImage);
 
+
+                _simpleArrayDataHighSpeed.Clear();
             }
         }
 
 
-
-
-
         private string HeightImageDir => ApplicationViewModel.Instance.SerializationBaseDir + $"/{IpConfig.ForthByte}/";
-        private string IntensityImageDir => ApplicationViewModel.Instance.SerializationBaseDir + $"/{IpConfig.ForthByte}-Intensity/";
+
+        private string IntensityImageDir =>
+            ApplicationViewModel.Instance.SerializationBaseDir + $"/{IpConfig.ForthByte}-Intensity/";
 
 
         public void PreStartHighSpeedCommunication()
@@ -410,11 +385,13 @@ namespace LJX8000.Core.ViewModels.Controller
             {
                 pinnedArray.Free();
             }
+
             return image;
         }
 
-        private void CopyToImage(ushort[] data, HImage image, int width, int height)
+        private HImage ToHImageManaged(ushort[] data, int width, int height)
         {
+            HImage image = new HImage();
             image.GenImageConst("uint2", width, height);
             for (int row = 0; row < height; row++)
             {
@@ -423,19 +400,15 @@ namespace LJX8000.Core.ViewModels.Controller
                     image.SetGrayval(row, col, data[width * row + col]);
                 }
             }
+
+            return image;
         }
-
-
-
 
 
         private static void Log(string msg)
         {
             IoC.IoC.Log(msg);
         }
-
-
-      
 
         #endregion
 
@@ -463,11 +436,12 @@ namespace LJX8000.Core.ViewModels.Controller
 
         private void DisplayImageInvoke(HImage heightImage)
         {
-            if(heightImage == null)
+            if (heightImage == null)
             {
-                Log( IpConfig + ">Image to display is null");
+                Log(IpConfig + ">Image to display is null");
                 return;
             }
+
             var controllerName = Name;
             var imageList = ApplicationViewModel.Instance.AllImagesToShow;
             var visualization = heightImage;
@@ -503,7 +477,6 @@ namespace LJX8000.Core.ViewModels.Controller
                     ApplicationViewModel.Instance.AllImagesToShow =
                         new ObservableCollection<ImageInfoViewModel>(imageList.OrderBy(ele => ele.ControllerName));
                 });
-
             }
         }
 
