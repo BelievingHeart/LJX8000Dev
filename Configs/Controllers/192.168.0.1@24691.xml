@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<ControllerViewModel xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="192.168.0.1@24691">
+  <ShouldImageBeDisplayed>true</ShouldImageBeDisplayed>
+  <RowsPerImage>800</RowsPerImage>
+  <ProfileCountEachFetch>100</ProfileCountEachFetch>
+</ControllerViewModel>

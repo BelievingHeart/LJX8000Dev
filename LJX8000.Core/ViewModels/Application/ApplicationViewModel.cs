@@ -74,6 +74,9 @@ namespace LJX8000.Core.ViewModels.Application
         public static string ConfigDirectory => Path.Combine(SolutionDirectory, "Configs");
         
         public static string ControllerSerializationBaseDir => Path.Combine(ConfigDirectory, "Controllers");
+        
+        public static string DocumentaryDir => Path.Combine(SolutionDirectory, "Docs");
+
 
 
         /// <summary>

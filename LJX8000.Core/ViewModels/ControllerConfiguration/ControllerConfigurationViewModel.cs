@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
@@ -18,6 +19,21 @@ namespace LJX8000.Core.ViewModels.ControllerConfiguration
             AddIpConfigCommand = new SimpleCommand(o=>AddController(), o=>!string.IsNullOrEmpty(InputIpConfig));
             DeleteIpConfigCommand = new ParameterizedCommand(DeleteController);
             GoToControllerHostViewCommand = new RelayCommand(GoToControllerHostView);
+            ExitApplicationCommand = new RelayCommand(ExitApplication);
+            OpenHelpDocCommand = new RelayCommand(OpenHelpDoc);
+        }
+
+        private void OpenHelpDoc()
+        {
+            Directory.CreateDirectory(ApplicationViewModel.DocumentaryDir);
+            var docPath = Path.Combine(ApplicationViewModel.DocumentaryDir, "Help.docx");
+            Process.Start(docPath);
+        }
+
+        private void ExitApplication()
+        {
+            var mainWindow = System.Windows.Application.Current.MainWindow;
+            mainWindow.Close();
         }
 
         private void GoToControllerHostView()
@@ -94,9 +110,13 @@ private void RemoveControllerConfig(ControllerViewModel controllerToRemove)
 
         public ICommand GoToControllerHostViewCommand { get; }
 
+        public ICommand ExitApplicationCommand { get; }
+        public ICommand OpenHelpDocCommand { get; }
+
 
         public ObservableCollection<ControllerViewModel> ExistingControllers { get; } =
             new ObservableCollection<ControllerViewModel>(ControllerManager.AttachedControllers);
+
 
         #endregion
     }

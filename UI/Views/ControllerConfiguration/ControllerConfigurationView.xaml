@@ -8,66 +8,103 @@
              xmlns:controllerConfiguration="clr-namespace:LJX8000.Core.ViewModels.ControllerConfiguration;assembly=LJX8000.Core"
              xmlns:validations="clr-namespace:UI.Validations"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             >
+    <UserControl.DataContext>
+        <controllerConfiguration:ControllerConfigurationViewModel />
+    </UserControl.DataContext>
+    
+    <UserControl.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding ExitApplicationCommand}"></KeyBinding>
+    </UserControl.InputBindings>
+    
     <GroupBox Header="IP configuration">
-        <GroupBox.DataContext>
-            <controllerConfiguration:ControllerConfigurationViewModel />
-        </GroupBox.DataContext>
-        <StackPanel>
-            <!-- Ip config input -->
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" 
-                         materialDesign:HintAssist.Hint="Ip config of next controller"
-                         materialDesign:HintAssist.IsFloating="True">
-                    <TextBox.Text>
-                        <Binding Path="InputIpConfig" UpdateSourceTrigger="PropertyChanged">
-                            <Binding.ValidationRules>
-                                <validations:IpConfigValidationRule/>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-                <Button Grid.Column="1" IsDefault="True" Content="Add" Command="{Binding AddIpConfigCommand}" Margin="5 2" />
-            </Grid>
-            <Separator/>
-            <!-- Existing ip configs -->
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <ListView ItemsSource="{Binding ExistingControllers}" Grid.Column="0">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <materialDesign:Chip Icon="{Binding Path=ForthByte}" Content="{Binding Name}" IsDeletable="True"
-                                                 Name="Chip">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="DeleteClick">
-                                        <i:InvokeCommandAction
-                                            Command="{Binding DataContext.DeleteIpConfigCommand, RelativeSource={RelativeSource AncestorType={x:Type GroupBox}}}"
-                                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type materialDesign:Chip}}}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </materialDesign:Chip>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-                
-                <!-- Start program -->
-                <Viewbox Grid.Column="1" VerticalAlignment="Top" Margin="10" Height="50"> 
-                    <Button Style="{StaticResource MaterialDesignRaisedButton}"
-                            materialDesign:ButtonAssist.CornerRadius="10" Command="{Binding Path=GoToControllerHostViewCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Start " />
-                            <materialDesign:PackIcon Kind="ArrowRightBoldHexagonOutline" />
-                        </StackPanel>
-                    </Button>
-                </Viewbox>
-            </Grid>
-        </StackPanel>
+
+        <Grid  Height="450">
+            <StackPanel>
+                <!-- Ip config input -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             materialDesign:HintAssist.Hint="Ip config of next controller"
+                             materialDesign:HintAssist.IsFloating="True">
+                        <TextBox.Text>
+                            <Binding Path="InputIpConfig" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <validations:IpConfigValidationRule />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                    <Button Grid.Column="1" IsDefault="True" Content="Add" Command="{Binding AddIpConfigCommand}"
+                            Margin="5 2" />
+                </Grid>
+                <Separator />
+                <!-- Existing ip configs -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ListView ItemsSource="{Binding ExistingControllers}" Grid.Column="0">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <materialDesign:Chip Icon="{Binding Path=ForthByte}" Content="{Binding Name}"
+                                                         IsDeletable="True"
+                                                         Name="Chip">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="DeleteClick">
+                                                <i:InvokeCommandAction
+                                                    Command="{Binding DataContext.DeleteIpConfigCommand, RelativeSource={RelativeSource AncestorType={x:Type GroupBox}}}"
+                                                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type materialDesign:Chip}}}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </materialDesign:Chip>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </ScrollViewer>
+
+                    <!-- Start program -->
+                    <StackPanel Grid.Column="1">
+                        <Viewbox VerticalAlignment="Top" Margin="10" Height="50">
+                            <Button Style="{StaticResource MaterialDesignRaisedButton}" ToolTip="Go to main page"
+                                    materialDesign:ButtonAssist.CornerRadius="10"
+                                    Command="{Binding Path=GoToControllerHostViewCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Start " />
+                                    <materialDesign:PackIcon Kind="ArrowRightBoldHexagonOutline" />
+                                </StackPanel>
+                            </Button>
+                        </Viewbox>
+
+                        <!-- Exit application -->
+                        <Viewbox VerticalAlignment="Bottom" Margin="10" Height="50">
+                            <Button Style="{StaticResource MaterialDesignRaisedButton}" ToolTip="Exit application"
+                                    materialDesign:ButtonAssist.CornerRadius="10"
+                                    Command="{Binding Path=ExitApplicationCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Exit " />
+                                    <materialDesign:PackIcon Kind="CloseBoxOutline" />
+                                </StackPanel>
+                            </Button>
+                        </Viewbox>
+                    </StackPanel>
+
+                    
+                </Grid>
+            </StackPanel>
+            <!-- Help -->
+            <Button VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="15" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                    ToolTip="Help" Command="{Binding OpenHelpDocCommand}">
+                <materialDesign:PackIcon
+                    Kind="HelpOutline"
+                    Height="24"
+                    Width="24" />
+            </Button>
+        </Grid>
     </GroupBox>
 </UserControl>
