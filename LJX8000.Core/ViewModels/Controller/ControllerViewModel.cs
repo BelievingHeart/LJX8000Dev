@@ -436,6 +436,8 @@ namespace LJX8000.Core.ViewModels.Controller
 
         private void DisplayImageInvoke(HImage heightImage)
         {
+//            HObject heightImageScaled;
+//            HDevelopExport.ColorizeKeyenceTifImage(heightImage, out heightImageScaled);
             if (heightImage == null)
             {
                 Log(IpConfig + ">Image to display is null");

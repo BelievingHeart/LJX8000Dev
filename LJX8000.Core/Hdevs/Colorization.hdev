@@ -3,14 +3,38 @@
 <procedure name="main">
 <interface/>
 <body>
-<l>read_image (Image, 'D:/share/3DImages/1115/Correlation/2次/2/1115-094557-1590.tif')</l>
-<l>threshold(Image, Region, 1, 999999)</l>
-<l>reduce_domain (Image, Region, ImageReduced)</l>
-<l>min_max_gray (Region, ImageReduced, 0, Min, Max, Range)</l>
-<l>scale_image(Image,ImageScaled, 0.01, 0)</l>
+<l>* dev_set_lut ('six')</l>
+<l>* read_image (Image, 'D:/share/3DImages/1115/Correlation/2次/2/1115-094557-1590.tif')</l>
+<l>* ColorizeKeyenceTifImage (Image, ImageScaled1)</l>
+<c></c>
 </body>
 <docu id="main">
 <parameters/>
+</docu>
+</procedure>
+<procedure name="ColorizeKeyenceTifImage">
+<interface>
+<io>
+<par name="Image" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="ImageColorized" base_type="iconic" dimension="0"/>
+</oo>
+</interface>
+<body>
+<l>threshold(Image, Region, 1, 999999)</l>
+<l>reduce_domain (Image, Region, ImageReduced)</l>
+<l>min_max_gray (Region, ImageReduced, 0, Min, Max, Range)</l>
+<l>scale := 65535.0/ Range</l>
+<l>scale_image(Image,ImageScaled, 1, -Min)</l>
+<l>scale_image (ImageScaled, ImageColorized, scale, 0)</l>
+<l>return ()</l>
+</body>
+<docu id="ColorizeKeyenceTifImage">
+<parameters>
+<parameter id="Image"/>
+<parameter id="ImageColorized"/>
+</parameters>
 </docu>
 </procedure>
 </hdevelop>

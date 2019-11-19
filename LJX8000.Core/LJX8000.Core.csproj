@@ -78,6 +78,7 @@
     <Compile Include="Enums\CameraTriggerSourceType.cs" />
     <Compile Include="Enums\CameraType.cs" />
     <Compile Include="Enums\DeviceStatus.cs" />
+    <Compile Include="Hdevs\Colorization.cs" />
     <Compile Include="Helpers\AutoSerializableHelper.cs" />
     <Compile Include="Helpers\ExpressionHelper.cs" />
     <Compile Include="Helpers\HalconHelpers.cs" />
@@ -109,9 +110,6 @@
       <Project>{9a49bfa3-f7b8-4254-ba49-2d690cec849d}</Project>
       <Name>LJXNative</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Hdevs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

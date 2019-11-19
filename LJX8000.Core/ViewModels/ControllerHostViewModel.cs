@@ -9,6 +9,7 @@ using LJX8000.Core.Commands;
 using LJX8000.Core.ViewModels.Application;
 using LJX8000.Core.ViewModels.Base;
 using LJX8000.Core.ViewModels.Controller;
+using MaterialDesignThemes.Wpf;
 
 namespace LJX8000.Core.ViewModels
 {
@@ -18,6 +19,7 @@ namespace LJX8000.Core.ViewModels
         private bool _shouldSaveAllLuminanceData;
         private DispatcherTimer _timer;
         private bool _isCollectingImagesDone;
+        private int _maxImageSetsToCollect;
 
         /// <summary>
         /// Controller names by ip address
@@ -34,11 +36,17 @@ namespace LJX8000.Core.ViewModels
         public ControllerHostViewModel()
         {
             OpenImageDirCommand = new RelayCommand(OpenImageDir);
+            NextDirDialogCloseCallback = OnNextDirDialogClosing;
             _timer = new DispatcherTimer(TimeSpan.FromMilliseconds(500), DispatcherPriority.Normal, OnTimerTicked, Dispatcher.CurrentDispatcher);
             _timer.Start();
         }
 
-   
+        private void OnNextDirDialogClosing(object sender, DialogClosingEventArgs eventargs)
+        {
+            var param = (string) eventargs.Parameter;
+            if (param == "ClickAway") MaxImageSetsToCollect = 0;
+        }
+
 
         public bool ShouldSaveImages
         {
@@ -84,12 +92,20 @@ namespace LJX8000.Core.ViewModels
         /// How many sets of images are collected in current directory
         /// </summary>
         public int NumImageSetsCollected { get; set; }
-        
-        
+
+
         /// <summary>
         /// How many image sets are going to be collected
         /// </summary>
-        public int MaxImageSetsToCollect { get; set; }
+        public int MaxImageSetsToCollect
+        {
+            get { return _maxImageSetsToCollect; }
+            set
+            {
+                _maxImageSetsToCollect = value;
+                NumImageSetsCollected = 0;
+            }
+        }
 
         public bool IsCollectingImagesDone
         {
@@ -118,6 +134,8 @@ namespace LJX8000.Core.ViewModels
                 ShouldSaveImages = true;
             }
         }
+
+        public DialogClosingEventHandler NextDirDialogCloseCallback { get; }
 
 
         private void OnTimerTicked(object sender, EventArgs e)

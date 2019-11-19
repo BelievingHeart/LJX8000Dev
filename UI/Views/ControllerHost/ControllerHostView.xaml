@@ -14,7 +14,7 @@
     <UserControl.DataContext>
         <viewModels:ControllerHostViewModel/>
     </UserControl.DataContext>
-    <materialDesign:DialogHost Style="{StaticResource MaterialDesignEmbeddedDialogHost}"
+    <materialDesign:DialogHost Style="{StaticResource MaterialDesignEmbeddedDialogHost}" CloseOnClickAway="True" DialogClosingCallback="{Binding NextDirDialogCloseCallback}" CloseOnClickAwayParameter="ClickAway"
                                IsOpen="{Binding IsCollectingImagesDone}">
         <materialDesign:DialogHost.DialogContent>
             <StackPanel>
@@ -124,9 +124,9 @@
                                       IsHitTestVisible="{Binding IsChecked, ElementName=ConnectAllToggle}"
                                       Style="{StaticResource MaterialDesignCheckBox}"
                                       IsChecked="{Binding ShouldSaveAllLuminanceData}" Content="Save all luminance" />
+                        
 
-
-                            <!-- Should image displayed? -->
+                        <!-- Should image displayed? -->
                             <materialDesign:Card Margin="10" DockPanel.Dock="Bottom">
                                 <StackPanel Background="{StaticResource SecondaryAccentBrush}">
                                     <TextBlock Text="Select images to display"

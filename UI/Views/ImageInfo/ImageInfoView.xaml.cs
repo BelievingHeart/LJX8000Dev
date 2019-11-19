@@ -13,7 +13,14 @@ namespace UI.Views.ImageInfo
 
         private void ImageInfoView_OnLoaded(object sender, RoutedEventArgs e)
         {
+            // Uncomment the following lines the colorize images
+            
 //            SmartWindowControlWpf.HalconWindow.SetLut("twelve");
+//            // Display again after colorization took effects
+//            var windowHandle = SmartWindowControlWpf.HalconWindow;
+//            var imageDisplayed = (DataContext as ImageInfoViewModel)?.Image;
+//            windowHandle.DispImage(imageDisplayed);
+
             AdaptRatio(ActualWidth);
             
             SizeChanged += (ss, ee) =>
